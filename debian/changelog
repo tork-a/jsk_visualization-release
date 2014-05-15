@@ -1,0 +1,17 @@
+ros-groovy-jsk-rqt-plugins (0.0.3-0quantal) quantal; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 14 May 2014 15:00:00 -0000
+
+ros-groovy-jsk-rqt-plugins (0.0.2-0quantal) quantal; urgency=high
+
+  * add --no-legend option to disable legend
+  * support polygon mode. if you want to plot in line mode, please add -L option
+  * implement 3d plotter
+  * add jsk_rqt_plugins directory
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 14 May 2014 15:00:00 -0000
+
+
