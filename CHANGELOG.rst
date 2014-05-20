@@ -2,6 +2,14 @@
 Changelog for package jsk_interactive_marker
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.1 (2014-05-20)
+------------------
+* use geometry package to install orocos_kdl, since orocos_kdl is not installed via rosdep https://github.com/ros/rosdistro/pull/4336
+* Contributors: Kei Okada
+
+1.0.0 (2014-05-17)
+------------------
+
 0.0.3 (2014-05-15)
 ------------------
 
