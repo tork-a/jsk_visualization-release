@@ -2,6 +2,18 @@
 Changelog for package jsk_rviz_plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.1 (2014-05-20)
+------------------
+* add README and images, modify some fails
+* Contributors: Yuto Inagaki
+
+1.0.0 (2014-05-17)
+------------------
+* show border as default. add auto coloring option to show
+  clusters efficiently.
+* decrease the number of the error messages from NormalDispaly
+* Contributors: Ryohei Ueda
+
 0.0.3 (2014-05-15)
 ------------------
 * supress erro message of NormalDisplay
