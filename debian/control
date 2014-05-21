@@ -1,0 +1,12 @@
+Source: ros-groovy-jsk-interactive-marker
+Section: misc
+Priority: extra
+Maintainer: furuta <furuta@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 7.0.50~), libtinyxml-dev, ros-groovy-actionlib, ros-groovy-catkin, ros-groovy-cmake-modules, ros-groovy-dynamic-tf-publisher, ros-groovy-eigen-conversions, ros-groovy-geometry, ros-groovy-geometry-msgs, ros-groovy-interactive-markers, ros-groovy-jsk-footstep-msgs, ros-groovy-jsk-pcl-ros, ros-groovy-roseus, ros-groovy-sensor-msgs, ros-groovy-tf, ros-groovy-tf-conversions, ros-groovy-urdf, ros-groovy-visualization-msgs
+Homepage: http://ros.org/wiki/interactive_marker
+Standards-Version: 3.9.2
+
+Package: ros-groovy-jsk-interactive-marker
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libtinyxml-dev, ros-groovy-actionlib, ros-groovy-dynamic-tf-publisher, ros-groovy-eigen-conversions, ros-groovy-geometry, ros-groovy-geometry-msgs, ros-groovy-interactive-markers, ros-groovy-jsk-footstep-msgs, ros-groovy-jsk-pcl-ros, ros-groovy-roseus, ros-groovy-sensor-msgs, ros-groovy-tf, ros-groovy-tf-conversions, ros-groovy-urdf, ros-groovy-visualization-msgs
+Description: jsk interactive markers
