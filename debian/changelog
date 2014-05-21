@@ -1,0 +1,35 @@
+ros-hydro-jsk-rqt-plugins (1.0.2-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 20 May 2014 15:00:00 -0000
+
+ros-hydro-jsk-rqt-plugins (1.0.1-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 19 May 2014 15:00:00 -0000
+
+ros-hydro-jsk-rqt-plugins (1.0.0-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 16 May 2014 15:00:00 -0000
+
+ros-hydro-jsk-rqt-plugins (0.0.3-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 14 May 2014 15:00:00 -0000
+
+ros-hydro-jsk-rqt-plugins (0.0.2-0precise) precise; urgency=high
+
+  * add --no-legend option to disable legend
+  * support polygon mode. if you want to plot in line mode, please add -L option
+  * implement 3d plotter
+  * add jsk_rqt_plugins directory
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 14 May 2014 15:00:00 -0000
+
+
