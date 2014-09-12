@@ -1,0 +1,12 @@
+Source: ros-groovy-jsk-interactive-test
+Section: misc
+Priority: extra
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 7.0.0), ros-groovy-catkin, ros-groovy-jsk-interactive, ros-groovy-jsk-interactive-marker, ros-groovy-mk, ros-groovy-rosbuild, ros-groovy-rospy, ros-groovy-visualization-msgs
+Homepage: http://ros.org/wiki/jsk_interactive_test
+Standards-Version: 3.9.2
+
+Package: ros-groovy-jsk-interactive-test
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-groovy-joy-mouse, ros-groovy-jsk-interactive, ros-groovy-jsk-interactive-marker, ros-groovy-rospy, ros-groovy-rviz, ros-groovy-visualization-msgs
+Description: jsk_interactive_test
