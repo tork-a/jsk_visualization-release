@@ -1,3 +1,27 @@
+## jsk_visualization (groovy) - 1.0.11-0
+
+The packages in the `jsk_visualization` repository were released into the `groovy` distro by running `/var/lib/jenkins/send_to_bloom.py jsk-ros-pkg jsk_visualization` on `Sun, 21 Sep 2014 17:22:04 -0000`
+
+These packages were released:
+- `jsk_interactive`
+- `jsk_interactive_marker`
+- `jsk_interactive_test`
+- `jsk_rqt_plugins`
+- `jsk_rviz_plugins`
+
+Version of package(s) in repository `jsk_visualization`:
+- rosdistro version: `1.0.10-0`
+- old version: `1.0.10-0`
+- new version: `1.0.11-0`
+
+Versions of tools used:
+- bloom version: `0.5.9`
+- catkin_pkg version: `0.2.2`
+- rosdep version: `0.10.27`
+- rosdistro version: `0.3.5`
+- vcstools version: `0.1.33`
+
+
 ## jsk_visualization (hydro) - 1.0.10-0
 
 The packages in the `jsk_visualization` repository were released into the `hydro` distro by running `/var/lib/jenkins/send_to_bloom.py jsk-ros-pkg jsk_visualization` on `Fri, 12 Sep 2014 18:15:38 -0000`
