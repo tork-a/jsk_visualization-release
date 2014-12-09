@@ -35,15 +35,16 @@ InteractivePointCloud::InteractivePointCloud(std::string marker_name,
   //publish
   pub_click_point_ = pnh_.advertise<geometry_msgs::PointStamped>("right_click_point", 1);
   pub_left_click_ = pnh_.advertise<geometry_msgs::PointStamped>("left_click_point", 1);
+  pub_left_click_relative_ = pnh_.advertise<geometry_msgs::PointStamped>("left_click_point_relative", 1);
   pub_marker_pose_ = pnh_.advertise<geometry_msgs::PoseStamped>("marker_pose", 1);
   pub_grasp_pose_ = pnh_.advertise<geometry_msgs::PoseStamped>("grasp_pose", 1);
   pub_box_movement_ = pnh_.advertise<jsk_pcl_ros::BoundingBoxMovement>("box_movement", 1);
   pub_handle_pose_ = pnh_.advertise<geometry_msgs::PoseStamped>("handle_pose", 1);
   pub_handle_pose_array_ = pnh_.advertise<geometry_msgs::PoseArray>("handle_pose_array", 1);
-
+  
   //subscribe
   sub_handle_pose_ = pnh_.subscribe<geometry_msgs::PoseStamped> ("set_handle_pose", 1, boost::bind( &InteractivePointCloud::setHandlePoseCallback, this, _1));
-
+  sub_marker_pose_ = pnh_.subscribe<geometry_msgs::PoseStamped>("set_marker_pose", 1, boost::bind( &InteractivePointCloud::setMarkerPoseCallback, this, _1)); 
   sub_point_cloud_.subscribe(pnh_, input_pointcloud_, 1);
 
 
@@ -116,6 +117,11 @@ void InteractivePointCloud::setHandlePoseCallback(const geometry_msgs::PoseStamp
   }
 }
 
+void InteractivePointCloud::setMarkerPoseCallback( const geometry_msgs::PoseStampedConstPtr &pose_stamped_msg){
+  marker_server_.setPose(marker_name_, pose_stamped_msg->pose, pose_stamped_msg->header);
+  marker_server_.applyChanges();
+}
+
 // create menu
 void InteractivePointCloud::makeMenu()
 {
@@ -146,6 +152,14 @@ void InteractivePointCloud::leftClickPoint( const visualization_msgs::Interactiv
   click_point.header = feedback->header;
   click_point.header.stamp = ros::Time::now();
   pub_left_click_.publish(click_point);
+  tf::Transform transform;
+  tf::poseMsgToTF(feedback->pose, transform);
+  tf::Vector3 vector_absolute(feedback->mouse_point.x, feedback->mouse_point.y, feedback->mouse_point.z); 
+  tf::Vector3 vector_relative=transform.inverse() * vector_absolute;
+  click_point.point.x=vector_relative.getX();
+  click_point.point.y=vector_relative.getY();   
+  click_point.point.z=vector_relative.getZ();
+  pub_left_click_relative_.publish(click_point);
 }
 
 void InteractivePointCloud::hide( const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback )
@@ -197,9 +211,12 @@ void InteractivePointCloud::makeMarker(const sensor_msgs::PointCloud2ConstPtr cl
 void InteractivePointCloud::makeMarker(const sensor_msgs::PointCloud2ConstPtr cloud, const jsk_pcl_ros::BoundingBoxArrayConstPtr box, const geometry_msgs::PoseStampedConstPtr handle, float size)
 {
   exist_handle_tf_ = false;
-  current_croud_ = *cloud;
-  current_box_ = *box;
-
+  if(cloud){
+    current_croud_ = *cloud;
+  }
+  if(box){
+    current_box_ = *box;
+  }
 
   InteractiveMarker int_marker;
   int_marker.name = marker_name_;
@@ -228,6 +245,10 @@ void InteractivePointCloud::makeMarker(const sensor_msgs::PointCloud2ConstPtr cl
       setHandlePoseCallback(handle);
     }
   }
+  else{
+    int_marker.pose.position.x=int_marker.pose.position.y=int_marker.pose.position.z=int_marker.pose.orientation.x=int_marker.pose.orientation.y=int_marker.pose.orientation.z=0;
+    int_marker.pose.orientation.w=1;
+  }
 
 
   int num_points = pcl_cloud.points.size();
@@ -245,8 +266,8 @@ void InteractivePointCloud::makeMarker(const sensor_msgs::PointCloud2ConstPtr cl
 
       InteractiveMarkerControl control;
       control.always_visible = true;
-      //control.interaction_mode = visualization_msgs::InteractiveMarkerControl::BUTTON;
-      control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_3D;
+      control.interaction_mode = visualization_msgs::InteractiveMarkerControl::BUTTON;
+      //control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_3D;
       control.orientation_mode = visualization_msgs::InteractiveMarkerControl::INHERIT;
 
       int_marker.header.stamp = ros::Time::now();

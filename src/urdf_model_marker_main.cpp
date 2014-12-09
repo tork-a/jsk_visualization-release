@@ -9,6 +9,7 @@
 
 using namespace urdf;
 using namespace std;
+using namespace im_utils;
 
 class UrdfModelSettings {
 private:
@@ -17,6 +18,7 @@ private:
   XmlRpc::XmlRpcValue model_config_;
   boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server_;
   string model_name_;
+  string model_description_;
   double scale_factor_;
   geometry_msgs::PoseStamped pose_stamped_;
   geometry_msgs::Pose root_offset_;
@@ -24,7 +26,7 @@ private:
   string mode_;
   string model_file_;
   bool registration_;
-  string fixed_link_;
+  vector<string> fixed_link_;
   string frame_id_;
   bool use_robot_description_;
   bool robot_mode_;
@@ -65,7 +67,7 @@ public:
       for (int i = umm_vec_size; i < msg_size; i++){
 	//geometry_msgs::PoseStamped pose = msg->poses[i];
 	ps.pose = msg->poses[i];
-	umm_vec_.push_back(umm_ptr(new UrdfModelMarker(model_name_, model_file_, header.frame_id, ps, root_offset_, scale_factor_, mode_ , robot_mode_, registration_,fixed_link_, use_robot_description_, use_visible_color_, initial_pose_map_, i, server_)));
+	umm_vec_.push_back(umm_ptr(new UrdfModelMarker(model_name_, model_description_, model_file_, header.frame_id, ps, root_offset_, scale_factor_, mode_ , robot_mode_, registration_,fixed_link_, use_robot_description_, use_visible_color_, initial_pose_map_, i, server_)));
       }
     }
   }
@@ -73,6 +75,12 @@ public:
   void init(){
     //name
     model_name_.assign(model_config_["name"]);
+
+    //description
+    model_description_ = "";
+    if(model_config_.hasMember("description")){
+      model_description_.assign(model_config_["description"]);
+    }
     //scale
     scale_factor_ = 1.02;
     if(model_config_.hasMember("scale")){
@@ -106,14 +114,22 @@ public:
     mode_ = "model";
     model_file_ = "";
     registration_ = false;
-    fixed_link_ = "";
     if(model_config_.hasMember("registration")){
       registration_ = model_config_["registration"];
       mode_ = "registration";
-      if(model_config_.hasMember("fixed-link")){
-	fixed_link_.assign( model_config_["fixed-link"]);
+    }
+
+    if(model_config_.hasMember("fixed_link")){
+      XmlRpc::XmlRpcValue fixed_links = model_config_["fixed_link"];
+      if(fixed_links.getType() == XmlRpc::XmlRpcValue::TypeString){
+	fixed_link_.push_back( fixed_links );
+      }else if(fixed_links.getType() == XmlRpc::XmlRpcValue::TypeArray){
+	for(int i=0; i< fixed_links.size(); i++){
+	  fixed_link_.push_back(fixed_links[i]);
+	}
       }
     }
+
     if(model_config_.hasMember("model")){
       model_file_.assign(model_config_["model"]);
     }
@@ -159,7 +175,7 @@ public:
   }
 
   void addUrdfMarker(){
-    new UrdfModelMarker(model_name_, model_file_, frame_id_, pose_stamped_ ,root_offset_, scale_factor_, mode_ , robot_mode_, registration_,fixed_link_, use_robot_description_, use_visible_color_,initial_pose_map_, -1, server_);
+    new UrdfModelMarker(model_name_, model_description_, model_file_, frame_id_, pose_stamped_ ,root_offset_, scale_factor_, mode_ , robot_mode_, registration_,fixed_link_, use_robot_description_, use_visible_color_,initial_pose_map_, -1, server_);
   }
 
   UrdfModelSettings(XmlRpc::XmlRpcValue model,   boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server) : pnh_("~"){
@@ -181,7 +197,6 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "jsk_model_marker_interface");
   ros::NodeHandle n;
   ros::NodeHandle pnh_("~");
-  
 
   string server_name;
   pnh_.param("server_name", server_name, std::string ("") );
