@@ -21,15 +21,16 @@ find_package(TinyXML REQUIRED)
 
 add_message_files(
   DIRECTORY msg
-  FILES MarkerMenu.msg MarkerPose.msg MoveObject.msg
+  FILES MarkerDimensions.msg MarkerMenu.msg MarkerPose.msg MoveModel.msg MoveObject.msg
 )
 add_service_files(DIRECTORY srv
-  FILES MarkerSetPose.srv SetPose.srv GetJointState.srv GetPose.srv)
+  FILES MarkerSetPose.srv SetPose.srv GetJointState.srv GetType.srv SetMarkerDimensions.srv GetMarkerDimensions.srv GetTransformableMarkerPose.srv SetTransformableMarkerPose.srv GetTransformableMarkerColor.srv SetTransformableMarkerColor.srv GetTransformableMarkerFocus.srv SetTransformableMarkerFocus.srv GetTransformableMarkerExistence.srv)
 
 generate_dynamic_reconfigure_options(
   cfg/InteractivePointCloud.cfg
   cfg/PointCloudCropper.cfg
   cfg/CameraInfoPublisher.cfg
+  cfg/InteractiveSetting.cfg
   )
 
 add_definitions("-g")
@@ -53,7 +54,7 @@ add_executable(urdf_model_marker src/urdf_model_marker.cpp src/urdf_model_marker
 target_link_libraries(urdf_model_marker ${catkin_LIBRARIES} ${orocos_kdl_LIBRARIES})
 add_dependencies(urdf_model_marker ${PROJECT_NAME}_generate_messages_cpp ${PROJECT_NAME}_gencfg ${catkin_EXPORTED_TARGETS})
 
-add_executable(urdf_control_marker src/urdf_control_marker.cpp)
+add_executable(urdf_control_marker src/urdf_control_marker.cpp src/interactive_marker_utils.cpp)
 target_link_libraries(urdf_control_marker ${catkin_LIBRARIES} ${orocos_kdl_LIBRARIES})
 add_dependencies(urdf_control_marker ${PROJECT_NAME}_generate_messages_cpp ${PROJECT_NAME}_gencfg ${catkin_EXPORTED_TARGETS})
 
@@ -96,9 +97,6 @@ add_dependencies(pointcloud_cropper ${PROJECT_NAME}_generate_messages_cpp ${PROJ
 
 add_executable(transformable_server_sample
   src/transformable_object.cpp
-  src/transformable_box.cpp
-  src/transformable_cylinder.cpp
-  src/transformable_torus.cpp
   src/transformable_interactive_server.cpp
   src/transformable_server_sample.cpp
 )
