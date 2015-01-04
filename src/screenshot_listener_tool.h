@@ -33,64 +33,34 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef FOOTSTEP_DISPLAY_H
-#define FOOTSTEP_DISPLAY_H
 
-#include <jsk_footstep_msgs/FootstepArray.h>
-#include <rviz/message_filter_display.h>
-#include <rviz/properties/float_property.h>
-#include <rviz/properties/bool_property.h>
-#include <rviz/ogre_helpers/billboard_line.h>
-#include <rviz/ogre_helpers/shape.h>
-#include <rviz/ogre_helpers/movable_text.h>
-#include <OGRE/OgreSceneNode.h>
+#ifndef JSK_RVIZ_PLUGIN_SCREENSHOT_LISTENER_H_
+#define JSK_RVIZ_PLUGIN_SCREENSHOT_LISTENER_H_
+
+#include <rviz/tool.h>
+#include <rviz/properties/property.h>
+#include <rviz/properties/property_tree_model.h>
+#include <jsk_rviz_plugins/Screenshot.h>
 
 namespace jsk_rviz_plugins
 {
-  class FootstepDisplay : public rviz::MessageFilterDisplay<jsk_footstep_msgs::FootstepArray>
+  class ScreenshotListenerTool: public rviz::Tool
   {
-    Q_OBJECT
   public:
-    FootstepDisplay();
-    virtual ~FootstepDisplay();
-  protected:
+    ScreenshotListenerTool();
+    virtual ~ScreenshotListenerTool();
     virtual void onInitialize();
-    virtual void reset();
-    virtual void update(float wall_dt, float ros_dt);
+    virtual void activate();
+    virtual void deactivate();
+  protected:
+    virtual bool takeScreenShot(
+      jsk_rviz_plugins::Screenshot::Request& req,
+      jsk_rviz_plugins::Screenshot::Response& res);
+    ros::ServiceServer screenshot_service_;
   private:
-    virtual void allocateCubes(size_t num);
-    virtual void allocateTexts(size_t num);
-    virtual double estimateTextSize(
-      const jsk_footstep_msgs::Footstep& footstep);
-    virtual double minNotZero(double a, double b);
-    virtual void processMessage(const jsk_footstep_msgs::FootstepArray::ConstPtr& msg);
-    virtual bool validateFloats(const jsk_footstep_msgs::FootstepArray& msg);
     
-    rviz::FloatProperty* alpha_property_;
-    rviz::FloatProperty* width_property_;
-    rviz::FloatProperty* height_property_;
-    rviz::FloatProperty* depth_property_;
-    rviz::BoolProperty* show_name_property_;
-    rviz::BoolProperty* use_group_coloring_property_;
-    jsk_footstep_msgs::FootstepArray::ConstPtr latest_footstep_;
-    typedef boost::shared_ptr<rviz::Shape> ShapePtr;
-    std::vector<ShapePtr> shapes_;
-    std::vector<rviz::MovableText*> texts_;
-    std::vector<Ogre::SceneNode*> text_nodes_;
-    rviz::BillboardLine* line_;
-    double width_, height_, depth_;
-    double alpha_;
-    bool show_name_;
-    bool use_group_coloring_;
-    //Ogre::SceneNode* scene_node_;
-  private Q_SLOTS:
-    void updateAlpha();
-    void updateWidth();
-    void updateHeight();
-    void updateDepth();
-    void updateShowName();
-    void updateUseGroupColoring();
   };
 }
+
 
 #endif
