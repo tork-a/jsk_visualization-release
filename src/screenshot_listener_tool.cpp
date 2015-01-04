@@ -1,4 +1,4 @@
-// -*- mode: c++; -*-
+// -*- mode: c++ -*-
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
@@ -33,22 +33,58 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef JSK_RVIZ_PLUGINS_QUIET_INTERACTIVE_MARKER_H_
-#define JSK_RVIZ_PLUGINS_QUIET_INTERACTIVE_MARKER_H_
-
-#include <rviz/default_plugin/interactive_marker_display.h>
-#include <rviz/properties/status_property.h>
+#include <ros/ros.h>
+#include <rviz/tool_manager.h>
+#include <rviz/display_context.h>
+#include <rviz/view_manager.h>
+#include <rviz/display_group.h>
+#include <rviz/display.h>
+#include <rviz/render_panel.h>
+#include <QImageWriter>
+#include "screenshot_listener_tool.h"
 
 namespace jsk_rviz_plugins
 {
-  class QuietInteractiveMarkerDisplay: public rviz::InteractiveMarkerDisplay
+  ScreenshotListenerTool::ScreenshotListenerTool()
+    : rviz::Tool()
   {
-  public:
-    QuietInteractiveMarkerDisplay();
-    virtual void setStatus( rviz::StatusProperty::Level level, const QString& name, const QString& text );
-  protected:
-    bool dummy_status_;
-  };
+
+  }
+  ScreenshotListenerTool::~ScreenshotListenerTool()
+  {
+
+  }
+
+  void ScreenshotListenerTool::onInitialize()
+  {
+    ros::NodeHandle nh;
+    screenshot_service_ = nh.advertiseService(
+      "/rviz/screenshot",
+      &ScreenshotListenerTool::takeScreenShot, this);
+  }
+  
+  void ScreenshotListenerTool::activate()
+  {
+    
+  }
+
+  void ScreenshotListenerTool::deactivate()
+  {
+   
+  }
+
+  bool ScreenshotListenerTool::takeScreenShot(
+    jsk_rviz_plugins::Screenshot::Request& req,
+    jsk_rviz_plugins::Screenshot::Response& res)
+  {
+    QPixmap screenshot = QPixmap::grabWindow(context_->getViewManager()->getRenderPanel()->winId());
+    QString output_file = QString::fromStdString(req.file_name);
+    QImageWriter writer(output_file);
+    writer.write(screenshot.toImage());
+    return true;
+  }
+
 }
 
-#endif
+#include <pluginlib/class_list_macros.h>
+PLUGINLIB_EXPORT_CLASS( jsk_rviz_plugins::ScreenshotListenerTool, rviz::Tool )
