@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   interactive_markers dynamic_tf_publisher tf_conversions eigen_conversions
   actionlib roscpp roslib urdf
   pcl_conversions
+  jsk_recognition_msgs
   ${PCL_MSGS}
   jsk_topic_tools)
 find_package(orocos_kdl REQUIRED)
@@ -105,7 +106,7 @@ target_link_libraries(transformable_server_sample ${catkin_LIBRARIES})
 add_dependencies(transformable_server_sample ${PROJECT_NAME}_generate_messages_cpp ${PROJECT_NAME}_gencfg ${catkin_EXPORTED_TARGETS})
 
 generate_messages(
-  DEPENDENCIES geometry_msgs jsk_footstep_msgs visualization_msgs jsk_pcl_ros
+  DEPENDENCIES geometry_msgs jsk_footstep_msgs visualization_msgs jsk_recognition_msgs
 )
 
 catkin_package(
@@ -126,14 +127,20 @@ install(TARGETS footstep_marker door_foot triangle_foot point_cloud_config_marke
 
 
 # copy *.rviz.default to *.rviz
+macro(copy_rviz_files _rviz_files)
+  foreach(_rviz_default_file ${_rviz_default_files})
+    string(REGEX REPLACE "\\.default$" "" _rviz_file "${_rviz_default_file}")
+    if(EXISTS "${_rviz_file}")
+      message("${_rviz_file} exists")
+    else()
+      execute_process(
+	COMMAND cmake -E copy "${_rviz_default_file}" "${_rviz_file}")
+      message("copy ${_rviz_default_file} to ${_rviz_file}")
+    endif()
+  endforeach()
+endmacro(copy_rviz_files _rviz_files)
+
 file(GLOB _rviz_default_files "${PROJECT_SOURCE_DIR}/launch/*.rviz.default")
-foreach(_rviz_default_file ${_rviz_default_files})
-  string(REGEX REPLACE "\\.default$" "" _rviz_file "${_rviz_default_file}")
-  if(EXISTS "${_rviz_file}")
-    message("${_rviz_file} exists")
-  else()
-    execute_process(
-      COMMAND cmake -E copy "${_rviz_default_file}" "${_rviz_file}")
-    message("copy ${_rviz_default_file} to ${_rviz_file}")
-  endif()
-endforeach()
+copy_rviz_files(_rviz_default_files)
+file(GLOB _rviz_default_files "${PROJECT_SOURCE_DIR}/config/*.rviz.default")
+copy_rviz_files(_rviz_default_files)
