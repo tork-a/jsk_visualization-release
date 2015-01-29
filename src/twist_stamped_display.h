@@ -33,69 +33,75 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef POLYGON_ARRAY_DISPLAY_H
-#define POLYGON_ARRAY_DISPLAY_H
 
-#include <jsk_recognition_msgs/PolygonArray.h>
-#include <rviz/message_filter_display.h>
-#include <rviz/properties/float_property.h>
-#include <rviz/ogre_helpers/billboard_line.h>
-#include <rviz/ogre_helpers/shape.h>
-#include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreManualObject.h>
-#include <OGRE/OgreMaterialManager.h>
+#ifndef JSK_RVIZ_PLUGINS_TWIST_STAMPED_H_
+#define JSK_RVIZ_PLUGINS_TWIST_STAMPED_H_
+
 #include <rviz/properties/color_property.h>
 #include <rviz/properties/bool_property.h>
-#include <rviz/ogre_helpers/billboard_line.h>
+#include <rviz/properties/float_property.h>
+#include <rviz/properties/int_property.h>
+#include <rviz/message_filter_display.h>
+#include <rviz/ogre_helpers/shape.h>
+#include <rviz/ogre_helpers/mesh_shape.h>
 #include <rviz/ogre_helpers/arrow.h>
+#include <OGRE/OgreSceneNode.h>
+
+#include <geometry_msgs/TwistStamped.h>
+#include <rviz/ogre_helpers/arrow.h>
+#include <rviz/ogre_helpers/billboard_line.h>
+
 
 namespace jsk_rviz_plugins
 {
-  
-  class PolygonArrayDisplay : public rviz::MessageFilterDisplay<jsk_recognition_msgs::PolygonArray>
+  class TwistStampedDisplay: public rviz::MessageFilterDisplay<geometry_msgs::TwistStamped>
   {
     Q_OBJECT
   public:
     typedef boost::shared_ptr<rviz::Arrow> ArrowPtr;
-    PolygonArrayDisplay();
-    virtual ~PolygonArrayDisplay();
+    typedef boost::shared_ptr<rviz::BillboardLine> BillboardLinePtr;
+    TwistStampedDisplay();
+    virtual ~TwistStampedDisplay();
   protected:
+
     virtual void onInitialize();
     virtual void reset();
-    virtual void updateSceneNodes(const jsk_recognition_msgs::PolygonArray::ConstPtr& msg);
-    virtual void allocateMaterials(int num);
-    virtual void updateLines(int num);
-    virtual Ogre::ColourValue getColor(size_t index);
-    virtual void processLine(const size_t i, const geometry_msgs::PolygonStamped& polygon);
-    virtual void processPolygon(const size_t i, const geometry_msgs::PolygonStamped& polygon);
-    virtual void processNormal(const size_t i, const geometry_msgs::PolygonStamped& polygon);
-    virtual void processPolygonMaterial(const size_t i);
-    virtual void processMessage(const jsk_recognition_msgs::PolygonArray::ConstPtr& msg);
-    rviz::ColorProperty* color_property_;
-    rviz::FloatProperty* alpha_property_;
-    rviz::BoolProperty* only_border_property_;
-    rviz::BoolProperty* auto_coloring_property_;
-    rviz::BoolProperty* show_normal_property_;
-    rviz::FloatProperty* normal_length_property_;
-    bool only_border_;
-    bool auto_coloring_;
-    bool show_normal_;
-    double normal_length_;
-    std::vector<Ogre::ManualObject*> manual_objects_;
-    std::vector<Ogre::SceneNode*> scene_nodes_;
-    std::vector<Ogre::SceneNode*> arrow_nodes_;
-    std::vector<ArrowPtr> arrow_objects_;
-    std::vector<Ogre::MaterialPtr> materials_;
-    std::vector<rviz::BillboardLine*> lines_;
-  private Q_SLOTS:
-    void updateAutoColoring();
-    void updateOnlyBorder();
-    void updateShowNormal();
-    void updateNormalLength();
-  private:
+    virtual void processMessage(
+      const geometry_msgs::TwistStamped::ConstPtr& msg);
+    virtual void updateRotationVelocity(
+      BillboardLinePtr circle,
+      ArrowPtr arrow,
+      const Ogre::Vector3& ux,
+      const Ogre::Vector3& uy,
+      const Ogre::Vector3& uz,
+      const double r,
+      bool positive);
+    ////////////////////////////////////////////////////////
+    // properties
+    ////////////////////////////////////////////////////////
+    rviz::FloatProperty* linear_scale_property_;
+    rviz::FloatProperty* angular_scale_property_;
+    rviz::ColorProperty* linear_color_property_;
+    rviz::ColorProperty* angular_color_property_;
     
+    double linear_scale_;
+    double angular_scale_;
+    QColor linear_color_;
+    QColor angular_color_;
+                         
+    ArrowPtr linear_arrow_;
+    BillboardLinePtr x_rotate_circle_;
+    BillboardLinePtr y_rotate_circle_;
+    BillboardLinePtr z_rotate_circle_;
+    ArrowPtr x_rotate_arrow_;
+    ArrowPtr y_rotate_arrow_;
+    ArrowPtr z_rotate_arrow_;
+  private Q_SLOTS:
+    void updateLinearScale();
+    void updateAngularScale();
+    void updateLinearColor();
+    void updateAngularColor();
   };
 }
 
 #endif
-
