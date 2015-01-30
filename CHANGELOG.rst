@@ -2,6 +2,9 @@
 Changelog for package jsk_rqt_plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.18 (2015-01-30)
+-------------------
+
 1.0.17 (2015-01-29)
 -------------------
 * [jsk_rqt_plugins] Add simple viewer to visualize mini maxwell status.
