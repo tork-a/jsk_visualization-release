@@ -2,7 +2,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2014, JSK Lab
+ *  Copyright (c) 2015, JSK Lab
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -33,58 +33,30 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include <ros/ros.h>
-#include <rviz/tool_manager.h>
-#include <rviz/display_context.h>
-#include <rviz/view_manager.h>
-#include <rviz/display_group.h>
-#include <rviz/display.h>
-#include <rviz/render_panel.h>
-#include <QImageWriter>
-#include "screenshot_listener_tool.h"
 
-namespace jsk_rviz_plugins
+#ifndef JSK_RVIZ_PLUGINGS_RVIZ_UTIL_H_
+#define JSK_RVIZ_PLUGINGS_RVIZ_UTIL_H_
+
+#include <std_msgs/ColorRGBA.h>
+#include <OgreColourValue.h>
+
+
+namespace rviz
 {
-  ScreenshotListenerTool::ScreenshotListenerTool()
-    : rviz::Tool()
+  inline Ogre::ColourValue colorMsgToOgre(const std_msgs::ColorRGBA& c)
   {
-
-  }
-  ScreenshotListenerTool::~ScreenshotListenerTool()
-  {
-
+    return Ogre::ColourValue(c.r, c.g, c.b, c.a);
   }
 
-  void ScreenshotListenerTool::onInitialize()
+  inline std_msgs::ColorRGBA colorOgreToMsg(const Ogre::ColourValue& c)
   {
-    ros::NodeHandle nh;
-    screenshot_service_ = nh.advertiseService(
-      "/rviz/screenshot",
-      &ScreenshotListenerTool::takeScreenShot, this);
+    std_msgs::ColorRGBA ret;
+    ret.r = c.r;
+    ret.g = c.g;
+    ret.b = c.b;
+    ret.a = c.a;
+    return ret;
   }
-  
-  void ScreenshotListenerTool::activate()
-  {
-    
-  }
-
-  void ScreenshotListenerTool::deactivate()
-  {
-   
-  }
-
-  bool ScreenshotListenerTool::takeScreenShot(
-    jsk_rviz_plugins::Screenshot::Request& req,
-    jsk_rviz_plugins::Screenshot::Response& res)
-  {
-    QPixmap screenshot = QPixmap::grabWindow(context_->getViewManager()->getRenderPanel()->winId());
-    QString output_file = QString::fromStdString(req.file_name);
-    QImageWriter writer(output_file);
-    writer.write(screenshot.toImage());
-    return true;
-  }
-
 }
 
-#include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS( jsk_rviz_plugins::ScreenshotListenerTool, rviz::Tool )
+#endif
