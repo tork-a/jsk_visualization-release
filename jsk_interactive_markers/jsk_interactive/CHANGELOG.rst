@@ -2,6 +2,11 @@
 Changelog for package jsk_interactive
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.19 (2015-04-09)
+-------------------
+* Remove rosbuild files
+* Contributors: Ryohei Ueda
+
 1.0.18 (2015-01-30)
 -------------------
 
