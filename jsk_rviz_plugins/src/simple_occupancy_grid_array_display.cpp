@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -32,50 +32,48 @@
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
-
-#include "sparse_occupancy_grid_array_display.h"
+#define BOOST_PARAMETER_MAX_ARITY 7
+#include "simple_occupancy_grid_array_display.h"
+#include <Eigen/Geometry>
+#include <jsk_pcl_ros/pcl_conversion_util.h>
+#include <jsk_topic_tools/color_utils.h>
+#include "rviz_util.h"
+#include <jsk_pcl_ros/geo_util.h>
 
 namespace jsk_rviz_plugins
 {
-  SparseOccupancyGridArrayDisplay::SparseOccupancyGridArrayDisplay()
+  SimpleOccupancyGridArrayDisplay::SimpleOccupancyGridArrayDisplay()
   {
+    auto_color_property_ = new rviz::BoolProperty(
+      "Auto Color", true,
+      "Auto coloring",
+      this, SLOT(updateAutoColor()));
+    
     alpha_property_ = new rviz::FloatProperty(
       "Alpha", 1.0,
       "Amount of transparency to apply to the polygon.",
-      this, SLOT( updateAlpha() ));
+      this, SLOT(updateAlpha()));
 
     alpha_property_->setMin(0.0);
     alpha_property_->setMax(1.0);
 
-    axis_color_property_ = new rviz::BoolProperty("Axis Color", false,
-                                                  "coloring according to the angle of the plane",
-                                                  this, SLOT(updateAxisColor()));
-    max_color_property_ = new rviz::ColorProperty("Max Color", QColor(255, 255, 255),
-                                                  "maximum color to draw grid map",
-                                                  this, SLOT(updateMaxColor()));
-    min_color_property_ = new rviz::ColorProperty("Min Color", QColor(0, 0, 0),
-                                                  "minimum color to draw grid map",
-                                                  this, SLOT(updateMinColor()));
+    
   }
 
-  SparseOccupancyGridArrayDisplay::~SparseOccupancyGridArrayDisplay()
+  SimpleOccupancyGridArrayDisplay::~SimpleOccupancyGridArrayDisplay()
   {
     delete alpha_property_;
-    delete max_color_property_;
-    delete min_color_property_;
-    delete axis_color_property_;
     allocateCloudsAndNodes(0);
   }
 
-  void SparseOccupancyGridArrayDisplay::onInitialize()
+  void SimpleOccupancyGridArrayDisplay::onInitialize()
   {
     MFDClass::onInitialize();
     updateAlpha();
-    updateMaxColor();
-    updateMinColor();
+    updateAutoColor();
   }
   
-  void SparseOccupancyGridArrayDisplay::allocateCloudsAndNodes(const size_t num)
+  void SimpleOccupancyGridArrayDisplay::allocateCloudsAndNodes(const size_t num)
   {
     if (num > clouds_.size()) { // need to allocate new node and clouds
       for (size_t i = clouds_.size(); i < num; i++) {
@@ -101,48 +99,30 @@ namespace jsk_rviz_plugins
     }
   }
 
-  void SparseOccupancyGridArrayDisplay::reset()
+  void SimpleOccupancyGridArrayDisplay::reset()
   {
     MFDClass::reset();
     allocateCloudsAndNodes(0);
   }
 
-  QColor SparseOccupancyGridArrayDisplay::gridColor(double value)
+  void SimpleOccupancyGridArrayDisplay::processMessage(
+    const jsk_recognition_msgs::SimpleOccupancyGridArray::ConstPtr& msg)
   {
-    // normalize to 0~1
-    return QColor(
-      (value * (max_color_.red() - min_color_.red()) + min_color_.red()),
-      (value * (max_color_.green() - min_color_.green()) + min_color_.green()),
-      (value * (max_color_.blue() - min_color_.blue()) + min_color_.blue()));
-  }
-
-  QColor SparseOccupancyGridArrayDisplay::axisColor(const Ogre::Quaternion& q,
-                                                    const Ogre::Vector3& p)
-  {
-    Ogre::Vector3 zaxis = q.zAxis();
-    Ogre::Vector3 reference = p.normalisedCopy();
-    double dot = zaxis.dotProduct(reference);
-    if (dot < -1) {
-      dot = -1.0;
-    }
-    else if (dot > 1) {
-      dot = 1.0;
-    }
-    double scale = (dot + 1) / 2.0;
-    return gridColor(scale);
-  }
-  
-  void SparseOccupancyGridArrayDisplay::processMessage(
-    const jsk_recognition_msgs::SparseOccupancyGridArray::ConstPtr& msg)
-  {
+    Ogre::ColourValue white(1, 1, 1, 1);
     allocateCloudsAndNodes(msg->grids.size()); // not enough
     for (size_t i = 0; i < msg->grids.size(); i++) {
       Ogre::SceneNode* node = nodes_[i];
       rviz::PointCloud* cloud = clouds_[i];
-      const jsk_recognition_msgs::SparseOccupancyGrid grid = msg->grids[i];
+      const jsk_recognition_msgs::SimpleOccupancyGrid grid = msg->grids[i];
       Ogre::Vector3 position;
       Ogre::Quaternion quaternion;
-      if(!context_->getFrameManager()->transform(grid.header, grid.origin_pose,
+      
+      // coefficients
+      geometry_msgs::Pose plane_pose;
+      jsk_pcl_ros::Plane::Ptr plane(new jsk_pcl_ros::Plane(grid.coefficients));
+      Eigen::Affine3f plane_pose_eigen = plane->coordinates();
+      tf::poseEigenToMsg(plane_pose_eigen, plane_pose);
+      if(!context_->getFrameManager()->transform(grid.header, plane_pose,
                                                  position,
                                                  quaternion)) {
         ROS_ERROR( "Error transforming pose '%s' from frame '%s' to frame '%s'",
@@ -154,29 +134,19 @@ namespace jsk_rviz_plugins
       node->setOrientation(quaternion);
       cloud->setDimensions(grid.resolution, grid.resolution, 0.0);
       std::vector<rviz::PointCloud::Point> points;
-      for (size_t ci = 0; ci < grid.columns.size(); ci++) {
-        const jsk_recognition_msgs::SparseOccupancyGridColumn column = grid.columns[ci];
-        const int column_index = column.column_index;
-        for (size_t ri = 0; ri < column.cells.size(); ri++) {
-          const jsk_recognition_msgs::SparseOccupancyGridCell cell = column.cells[ri];
-          const int row_index = cell.row_index;
-          rviz::PointCloud::Point point;
-          if (!axis_color_) {
-            QColor color = gridColor(cell.value);
-            Ogre::ColourValue ogre_color = rviz::qtToOgre(color);
-            point.color = ogre_color;
-          }
-          else {
-            QColor color = axisColor(quaternion, Ogre::Vector3(1, 0, 0));
-            Ogre::ColourValue ogre_color = rviz::qtToOgre(color);
-            point.color = ogre_color;
-          }
-          point.position.x = grid.resolution * (column_index + 0.5);
-          point.position.y = grid.resolution * (row_index + 0.5);
-          point.position.z = 0.0;
-          
-          points.push_back(point);
+      for (size_t ci = 0; ci < grid.cells.size(); ci++) {
+        const geometry_msgs::Point p = grid.cells[ci];
+        rviz::PointCloud::Point point;
+        if (auto_color_) {
+          point.color = rviz::colorMsgToOgre(jsk_topic_tools::colorCategory20(i));
         }
+        else {
+          point.color = white;
+        }
+        point.position.x = p.x;
+        point.position.y = p.y;
+        point.position.z = p.z;
+        points.push_back(point);
       }
       cloud->clear();
       cloud->setAlpha(alpha_);
@@ -187,27 +157,18 @@ namespace jsk_rviz_plugins
     context_->queueRender();
   }
   
-  void SparseOccupancyGridArrayDisplay::updateAlpha()
+  void SimpleOccupancyGridArrayDisplay::updateAlpha()
   {
     alpha_ = alpha_property_->getFloat();
   }
 
-  void SparseOccupancyGridArrayDisplay::updateMaxColor()
+  void SimpleOccupancyGridArrayDisplay::updateAutoColor()
   {
-    max_color_ = max_color_property_->getColor();
+    auto_color_ = auto_color_property_->getBool();
   }
 
-  void SparseOccupancyGridArrayDisplay::updateMinColor()
-  {
-    min_color_ = min_color_property_->getColor();
-  }
-
-  void SparseOccupancyGridArrayDisplay::updateAxisColor()
-  {
-    axis_color_ = axis_color_property_->getBool();
-  }
 }
 
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS( jsk_rviz_plugins::SparseOccupancyGridArrayDisplay, rviz::Display )
+PLUGINLIB_EXPORT_CLASS( jsk_rviz_plugins::SimpleOccupancyGridArrayDisplay, rviz::Display )
 
