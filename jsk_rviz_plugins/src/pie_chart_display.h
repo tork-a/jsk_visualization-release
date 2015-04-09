@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -63,7 +63,7 @@ namespace jsk_rviz_plugins
     virtual void onInitialize();
     virtual void processMessage(const std_msgs::Float32::ConstPtr& msg);
     virtual void drawPlot(double val);
-
+    virtual void update(float wall_dt, float ros_dt);
     // properties
     rviz::RosTopicProperty* update_topic_property_;
     rviz::IntProperty* size_property_;
@@ -99,10 +99,13 @@ namespace jsk_rviz_plugins
     double bg_alpha_;
     double max_value_;
     double min_value_;
+    float data_;
+    bool update_required_;
+    bool first_time_;
     OverlayObject::Ptr overlay_;
     
     boost::mutex mutex_;
-                            
+                       
   protected Q_SLOTS:
     void updateTopic();
     void updateSize();
