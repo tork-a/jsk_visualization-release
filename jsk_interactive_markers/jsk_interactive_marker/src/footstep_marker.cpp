@@ -1,3 +1,39 @@
+// -*- mode: c++ -*-
+/*********************************************************************
+ * Software License Agreement (BSD License)
+ *
+ *  Copyright (c) 2015, JSK Lab
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above
+ *     copyright notice, this list of conditions and the following
+ *     disclaimer in the documentation and/o2r other materials provided
+ *     with the distribution.
+ *   * Neither the name of the JSK Lab nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ *  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ *  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ *********************************************************************/
+
+#define BOOST_PARAMETER_MAX_ARITY 7
 #include <iostream>
 #include <interactive_markers/tools.h>
 #include <jsk_interactive_marker/footstep_marker.h>
@@ -11,6 +47,9 @@
 #include <eigen_conversions/eigen_msg.h>
 #include <tf_conversions/tf_eigen.h>
 #include <jsk_pcl_ros/geo_util.h>
+#include <jsk_pcl_ros/pcl_conversion_util.h>
+#include <jsk_pcl_ros/tf_listener_singleton.h>
+#include <jsk_interactive_marker/SnapFootPrint.h>
 
 FootstepMarker::FootstepMarker():
 ac_("footstep_planner", true), ac_exec_("footstep_controller", true),
@@ -25,6 +64,7 @@ ac_("footstep_planner", true), ac_exec_("footstep_controller", true),
   pnh.param("lfoot_frame_id", lfoot_frame_id_, std::string("lfsensor"));
   pnh.param("rfoot_frame_id", rfoot_frame_id_, std::string("rfsensor"));
   pnh.param("show_6dof_control", show_6dof_control_, true);
+  pnh.param("use_projection_service", use_projection_service_, false);
   // read lfoot_offset
   readPoseParam(pnh, "lfoot_offset", lleg_offset_);
   readPoseParam(pnh, "rfoot_offset", rleg_offset_);
@@ -45,13 +85,7 @@ ac_("footstep_planner", true), ac_exec_("footstep_controller", true),
   }
   
   if (use_plane_snap_) {
-    //plane_sub_ = pnh.subscribe("planes", 1, &FootstepMarker::planesCB, this);
-    polygons_sub_.subscribe(pnh, "planes", 1);
-    coefficients_sub_.subscribe(pnh, "planes_coefficients", 1);
-    sync_ = boost::make_shared<message_filters::Synchronizer<PlaneSyncPolicy> >(100);
-    sync_->connectInput(polygons_sub_, coefficients_sub_);
-    sync_->registerCallback(boost::bind(&FootstepMarker::planeCB,
-                                        this, _1, _2));
+    grid_sub_ = pnh.subscribe("grid_arrays", 1, &FootstepMarker::planeCB, this);
   }
   
   if (pnh.getParam("initial_reference_frame", initial_reference_frame_)) {
@@ -92,48 +126,34 @@ ac_("footstep_planner", true), ac_exec_("footstep_controller", true),
   
   if (use_initial_reference_) {
     while (ros::ok()) {
-      if (tf_listener_->waitForTransform(marker_frame_id_, initial_reference_frame_,
-                                         ros::Time(0.0), ros::Duration(10.0))) {
-        break;
+      try {
+        if (tf_listener_->waitForTransform(marker_frame_id_, initial_reference_frame_,
+                                           ros::Time(0.0), ros::Duration(10.0))) {
+          break;
+        }
+        ROS_INFO("waiting for transform %s => %s", marker_frame_id_.c_str(),
+                 initial_reference_frame_.c_str());
+      
+        ROS_INFO("resolved transform %s => %s", marker_frame_id_.c_str(),
+                 initial_reference_frame_.c_str());
+        tf::StampedTransform transform;
+        tf_listener_->lookupTransform(marker_frame_id_, initial_reference_frame_,
+                                      ros::Time(0), transform);
+        marker_pose_.pose.position.x = transform.getOrigin().x();
+        marker_pose_.pose.position.y = transform.getOrigin().y();
+        marker_pose_.pose.position.z = transform.getOrigin().z();
+        marker_pose_.pose.orientation.x = transform.getRotation().x();
+        marker_pose_.pose.orientation.y = transform.getRotation().y();
+        marker_pose_.pose.orientation.z = transform.getRotation().z();
+        marker_pose_.pose.orientation.w = transform.getRotation().w();
       }
-      ROS_INFO("waiting for transform %s => %s", marker_frame_id_.c_str(),
-               initial_reference_frame_.c_str());
+      catch (tf2::TransformException& e) {
+        ROS_ERROR("Failed to lookup transformation: %s", e.what());
+      }
     }
-    ROS_INFO("resolved transform %s => %s", marker_frame_id_.c_str(),
-             initial_reference_frame_.c_str());
-    tf::StampedTransform transform;
-    tf_listener_->lookupTransform(marker_frame_id_, initial_reference_frame_,
-                                  ros::Time(0), transform);
-    marker_pose_.pose.position.x = transform.getOrigin().x();
-    marker_pose_.pose.position.y = transform.getOrigin().y();
-    marker_pose_.pose.position.z = transform.getOrigin().z();
-    marker_pose_.pose.orientation.x = transform.getRotation().x();
-    marker_pose_.pose.orientation.y = transform.getRotation().y();
-    marker_pose_.pose.orientation.z = transform.getRotation().z();
-    marker_pose_.pose.orientation.w = transform.getRotation().w();
   }
 
   initializeInteractiveMarker();
-  
-  move_marker_sub_ = nh.subscribe("move_marker", 1, &FootstepMarker::moveMarkerCB, this);
-  menu_command_sub_ = nh.subscribe("menu_command", 1, &FootstepMarker::menuCommandCB, this);
-  exec_sub_ = pnh.subscribe("execute", 1, &FootstepMarker::executeCB, this);
-  resume_sub_ = pnh.subscribe("resume", 1, &FootstepMarker::resumeCB, this);
-  if (use_initial_footstep_tf_) {
-    // waiting TF
-    while (ros::ok()) {
-      if (tf_listener_->waitForTransform(lfoot_frame_id_, marker_frame_id_,
-                                         ros::Time(0.0), ros::Duration(10.0))
-          && tf_listener_->waitForTransform(rfoot_frame_id_, marker_frame_id_,
-                                            ros::Time(0.0), ros::Duration(10.0))) {
-        break;
-      }
-      ROS_INFO("waiting for transform {%s, %s} => %s", lfoot_frame_id_.c_str(),
-               rfoot_frame_id_.c_str(), marker_frame_id_.c_str());
-    }
-    ROS_INFO("resolved transform {%s, %s} => %s", lfoot_frame_id_.c_str(),
-             rfoot_frame_id_.c_str(), marker_frame_id_.c_str());
-  }
 
   if (use_footstep_planner_) {
     ROS_INFO("waiting planner server...");
@@ -145,6 +165,32 @@ ac_("footstep_planner", true), ac_exec_("footstep_controller", true),
     ac_exec_.waitForServer();
     ROS_INFO("found controller server...");
   }
+  
+  move_marker_sub_ = nh.subscribe("move_marker", 1, &FootstepMarker::moveMarkerCB, this);
+  menu_command_sub_ = nh.subscribe("menu_command", 1, &FootstepMarker::menuCommandCB, this);
+  exec_sub_ = pnh.subscribe("execute", 1, &FootstepMarker::executeCB, this);
+  resume_sub_ = pnh.subscribe("resume", 1, &FootstepMarker::resumeCB, this);
+  if (use_initial_footstep_tf_) {
+    // waiting TF
+    while (ros::ok()) {
+      try {
+      if (tf_listener_->waitForTransform(lfoot_frame_id_, marker_frame_id_,
+                                         ros::Time(0.0), ros::Duration(10.0))
+          && tf_listener_->waitForTransform(rfoot_frame_id_, marker_frame_id_,
+                                            ros::Time(0.0), ros::Duration(10.0))) {
+        break;
+      }
+      ROS_INFO("waiting for transform {%s, %s} => %s", lfoot_frame_id_.c_str(),
+               rfoot_frame_id_.c_str(), marker_frame_id_.c_str());
+      }
+      catch (tf2::TransformException& e) {
+        ROS_ERROR("Failed to lookup transformation: %s", e.what());
+      }
+    }
+    ROS_INFO("resolved transform {%s, %s} => %s", lfoot_frame_id_.c_str(),
+             rfoot_frame_id_.c_str(), marker_frame_id_.c_str());
+  }
+
 }
 
 // a function to read double value from XmlRpcValue.
@@ -295,23 +341,28 @@ void FootstepMarker::menuCommandCB(const std_msgs::UInt8::ConstPtr& msg) {
 
 void FootstepMarker::updateInitialFootstep() {
   //ROS_INFO("updateInitialFootstep");
-  if (!use_initial_footstep_tf_) {
-    return;
-  } 
-  tf::StampedTransform lfoot_transform, rfoot_transform;
-  tf_listener_->lookupTransform(marker_frame_id_, lfoot_frame_id_, ros::Time(0.0), lfoot_transform);
-  tf_listener_->lookupTransform(marker_frame_id_, rfoot_frame_id_, ros::Time(0.0), rfoot_transform);
+  try {
+    if (!use_initial_footstep_tf_) {
+      return;
+    } 
+    tf::StampedTransform lfoot_transform, rfoot_transform;
+    tf_listener_->lookupTransform(marker_frame_id_, lfoot_frame_id_, ros::Time(0.0), lfoot_transform);
+    tf_listener_->lookupTransform(marker_frame_id_, rfoot_frame_id_, ros::Time(0.0), rfoot_transform);
 
-  // apply offset
-  // convert like tf -> eigen -> msg
-  Eigen::Affine3d le, re;
-  tf::transformTFToEigen(lfoot_transform * lleg_offset_, le); // tf -> eigen
-  tf::poseEigenToMsg(le, lleg_initial_pose_);  // eigen -> msg
-  tf::transformTFToEigen(rfoot_transform * rleg_offset_, re); // tf -> eigen
-  tf::poseEigenToMsg(re, rleg_initial_pose_);  // eigen -> msg
+    // apply offset
+    // convert like tf -> eigen -> msg
+    Eigen::Affine3d le, re;
+    tf::transformTFToEigen(lfoot_transform * lleg_offset_, le); // tf -> eigen
+    tf::poseEigenToMsg(le, lleg_initial_pose_);  // eigen -> msg
+    tf::transformTFToEigen(rfoot_transform * rleg_offset_, re); // tf -> eigen
+    tf::poseEigenToMsg(re, rleg_initial_pose_);  // eigen -> msg
   
-  // we need to move the marker
-  initializeInteractiveMarker();
+    // we need to move the marker
+    initializeInteractiveMarker();
+  }
+  catch (tf2::TransformException& e) {
+    ROS_ERROR("Failed to lookup transformation: %s", e.what());
+  }
 }
 
 void FootstepMarker::processMenuFeedback(uint8_t menu_entry_id) {
@@ -369,142 +420,118 @@ void FootstepMarker::callEstimateOcclusion()
   estimate_occlusion_client_.call(srv);
 }
 
-double FootstepMarker::projectPoseToPlane(
-  const std::vector<geometry_msgs::PointStamped>& polygon,
-  const geometry_msgs::PoseStamped& point,
-  geometry_msgs::PoseStamped& foot)
-{
-#ifdef PROJECT_DEBUG
-  ROS_INFO("---------");
-#endif
-  jsk_pcl_ros::ConvexPolygon::Vertices vertices;
-  for (size_t i = 0; i < polygon.size(); i++) {
-    geometry_msgs::Point p = polygon[i].point;
-    jsk_pcl_ros::ConvexPolygon::Vertex v (p.x, p.y, p.z);
-    //ROS_INFO("v[%lu] - [%f, %f, %f]", i, v[0], v[1], v[2]);
-    vertices.push_back(v);
-  }
-  jsk_pcl_ros::ConvexPolygon convex(vertices);
-  Eigen::Vector3f orig(polygon[1].point.x, polygon[1].point.y, polygon[1].point.z);
-  Eigen::Vector3f A(polygon[0].point.x, polygon[0].point.y, polygon[0].point.z);
-  Eigen::Vector3f B(polygon[2].point.x, polygon[2].point.y, polygon[2].point.z);
-  Eigen::Vector3f normal = (B - orig).cross(A - orig).normalized();
-  Eigen::Vector3f g(0, 0, 1);   // should be parameterize
-  bool reversed = false;
-  if (normal.dot(g) < 0) {
-    normal = - normal;
-    reversed = true;
-  }
-  Eigen::Vector3f p(point.pose.position.x, point.pose.position.y, point.pose.position.z);
-  double d = convex.distanceToPoint(p);
-  Eigen::Vector3f projected_point = p - d * normal;
-  // Eigen::Vector3d projected_point;
-  // convex.projectOnPlane(p, projected_point);
-#ifdef PROJECT_DEBUG
-  ROS_INFO("normal: [%f, %f, %f]", normal[0], normal[1], normal[2]);
-  ROS_INFO("plane d: %f", convex.getD());
-  ROS_INFO("distance: %f", d);
-#endif
-  // check the point is inside of the polygon or not...
-  bool insidep = convex.isInside(projected_point);
-  if (insidep) {
-#ifdef PROJECT_DEBUG
-    ROS_INFO("insidep: true");
-#endif
-  }
-  else {
-#ifdef PROJECT_DEBUG
-     ROS_INFO("insidep: false");
-#endif
-     d = DBL_MAX;
-  }
-  foot.header = point.header;
-  foot.pose.position.x = projected_point[0];
-  foot.pose.position.y = projected_point[1];
-  foot.pose.position.z = projected_point[2];
-  // compute orientation...
-  Eigen::Quaternionf q(point.pose.orientation.w,
-                       point.pose.orientation.x,
-                       point.pose.orientation.y,
-                       point.pose.orientation.z);
-  Eigen::Quaternionf q2;
-  Eigen::Matrix3f m = q.toRotationMatrix();
-  // Eigen::Vector3d e_x = m.col(0);
-  // Eigen::Vector3d e_y = m.col(1);
-  Eigen::Vector3f e_z = m.col(2);
-  Eigen::Quaternionf trans;
-  trans.setFromTwoVectors(e_z, normal); // ???
-  // we need to check if trans is flipped
-  
-  q2 = trans * q;
-  Eigen::Vector3f e_z2 = q2.toRotationMatrix().col(2);
-#ifdef PROJECT_DEBUG
-  ROS_INFO("e_z: [%f, %f, %f]", e_z[0], e_z[1], e_z[2]);
-  ROS_INFO("e_z2: [%f, %f, %f]", e_z2[0], e_z2[1], e_z2[2]);
-#endif
-  //q2 = q * trans;
-  foot.pose.orientation.x = q2.x();
-  foot.pose.orientation.y = q2.y();
-  foot.pose.orientation.z = q2.z();
-  foot.pose.orientation.w = q2.w();
-  return fabs(d);
-}
-
-void FootstepMarker::transformPolygon(
-  const geometry_msgs::PolygonStamped& polygon,
-  const std_msgs::Header& target_header,
-  std::vector<geometry_msgs::PointStamped>& output_points)
-{
-  for (size_t i = 0; i < polygon.polygon.points.size(); i++) {
-    geometry_msgs::PointStamped point, output;
-    point.header = polygon.header;
-    point.point.x = polygon.polygon.points[i].x;
-    point.point.y = polygon.polygon.points[i].y;
-    point.point.z = polygon.polygon.points[i].z;
-    tf_listener_->transformPoint(target_header.frame_id,
-                                 point,
-                                 output);
-    output_points.push_back(output);
-  }
-}
-
 bool FootstepMarker::projectMarkerToPlane()
 {
-  if (latest_planes_->polygons.size() == 0) {
-    ROS_WARN("it's not valid polygons");
-    return false;
-  }
-  //ROS_ERROR("projecting");
-  double min_distance = DBL_MAX;
-  geometry_msgs::PoseStamped min_pose;
-  for (size_t i = 0; i < latest_planes_->polygons.size(); i++) {
-    std::vector<geometry_msgs::PointStamped> transformed_points;
-    transformPolygon(latest_planes_->polygons[i],
-                     marker_pose_.header,
-                     transformed_points);
-    geometry_msgs::PoseStamped foot;
-    geometry_msgs::PoseStamped from;
-    from.pose = marker_pose_.pose;
-    from.header = marker_pose_.header;
-    double distance = projectPoseToPlane(transformed_points,
-                                         from, foot);
-    if (min_distance > distance) {
-      min_pose = foot;
-      min_distance = distance;
+  if (use_projection_service_) {
+    jsk_interactive_marker::SnapFootPrint snap;
+    snap.request.input_pose = marker_pose_;
+    snap.request.lleg_pose.orientation.w = 1.0;
+    snap.request.rleg_pose.orientation.w = 1.0;
+    snap.request.lleg_pose.position.y = footstep_margin_ / 2.0;
+    snap.request.rleg_pose.position.y = - footstep_margin_ / 2.0;
+    if (ros::service::call("project_footprint", snap) && snap.response.success) {
+      // Resolve tf
+      geometry_msgs::PoseStamped resolved_pose;
+      tf_listener_->transformPose(marker_pose_.header.frame_id,
+                                  snap.response.snapped_pose,
+                                  resolved_pose);
+      // Check distance to project
+      Eigen::Vector3d projected_point, marker_point;
+      tf::pointMsgToEigen(marker_pose_.pose.position, marker_point);
+      tf::pointMsgToEigen(resolved_pose.pose.position, projected_point);
+      if ((projected_point - marker_point).norm() < 0.3) {
+        marker_pose_.pose = resolved_pose.pose;
+        return true;
+      }
+      else {
+        return false;
+      }
+      
+    }
+    else {
+      ROS_WARN("Failed to snap footprint");
+      return false;
     }
   }
-  ROS_DEBUG_STREAM("min_distance: " << min_distance);
-  if (min_distance < 0.3) {     // smaller than 30cm
-    marker_pose_.pose = min_pose.pose;
-    snapped_pose_pub_.publish(min_pose);
-    // server_->setPose("footstep_marker", min_pose.pose);
-    // server_->applyChanges();
-    //ROS_WARN("projected");
-    return true;
-  }
   else {
-    //ROS_WARN("not projected");
-    return false;
+    if (latest_grids_->grids.size() == 0) {
+      ROS_WARN("it's not valid grids");
+      return false;
+    }
+    // Convert to jsk_pcl_ros::GridPlane object
+    std::vector<jsk_pcl_ros::GridPlane::Ptr> grids;
+    for (size_t i = 0; i < latest_grids_->grids.size(); i++) {
+    
+      tf::StampedTransform tf_transform
+        = jsk_pcl_ros::lookupTransformWithDuration(
+          tf_listener_.get(),
+          marker_pose_.header.frame_id,
+          latest_grids_->grids[i].header.frame_id,
+          marker_pose_.header.stamp,
+          ros::Duration(1.0));
+    
+      Eigen::Affine3f transform;
+      tf::transformTFToEigen(tf_transform, transform);
+      // ROS_INFO("transform: %s -> %s: [%f, %f, %f]",
+      //          marker_pose_.header.frame_id.c_str(),
+      //          latest_grids_->grids[i].header.frame_id.c_str(),
+      //          transform.translation()[0],
+      //          transform.translation()[1],
+      //          transform.translation()[2]);
+    
+      grids.push_back(boost::make_shared<jsk_pcl_ros::GridPlane>(
+                        jsk_pcl_ros::GridPlane::fromROSMsg(
+                          latest_grids_->grids[i],
+                          transform)));
+    }
+    //ROS_ERROR("projecting");
+    double min_distance = DBL_MAX;
+    geometry_msgs::PoseStamped min_pose;
+    Eigen::Affine3f marker_coords;
+    // ROS_INFO_STREAM("marker_pose: " << marker_pose_.pose);
+    tf::poseMsgToEigen(marker_pose_.pose, marker_coords);
+    Eigen::Vector3f marker_pos(marker_coords.translation());
+    for (size_t i = 0; i < grids.size(); i++) {
+      Eigen::Affine3f projected_coords;
+      grids[i]->getPolygon()->projectOnPlane(marker_coords, projected_coords);
+      Eigen::Vector3f projected_normal = projected_coords.rotation() * Eigen::Vector3f::UnitZ();
+      Eigen::Vector3f normal = grids[i]->getPolygon()->getNormal();
+      Eigen::Vector3f projected_point(projected_coords.translation());
+      Eigen::Quaternionf projected_rot(projected_coords.rotation());
+      // ROS_INFO("[FootstepMarker::projectMarkerToPlane] normal: [%f, %f, %f]",
+      //          normal[0], normal[1], normal[2]);
+      // ROS_INFO("[FootstepMarker::projectMarkerToPlane] projected_normal: [%f, %f, %f]",
+      //          projected_normal[0], projected_normal[1], projected_normal[2]);
+      // ROS_INFO("[FootstepMarker::projectMarkerToPlane] projected point: [%f, %f, %f]",
+      //          projected_point[0], projected_point[1], projected_point[2]);
+      // ROS_INFO("[FootstepMarker::projectMarkerToPlane] projected rot: [%f, %f, %f, %f]",
+      //          projected_rot.x(), projected_rot.y(), projected_rot.z(), projected_rot.w());
+      if (grids[i]->isOccupiedGlobal(projected_point)) {
+        double distance = (marker_coords.translation() - projected_point).norm();
+        // ROS_INFO("[FootstepMarker::projectMarkerToPlane] distance at %lu is %f", i, distance);
+        if (distance < min_distance) {
+          min_distance = distance;
+          tf::poseEigenToMsg(projected_coords, min_pose.pose);
+          // ROS_INFO("[FootstepMarker::projectMarkerToPlane] z diff: %f(%f)", acos(projected_normal.dot(normal)), projected_normal.dot(normal));
+        }
+      }
+      else {
+        // ROS_INFO("[FootstepMarker::projectMarkerToPlane] not occupied at %lu", i);
+      }
+    }
+    // ROS_INFO_STREAM("min_distance: " << min_distance);
+    if (min_distance < 0.3) {     // smaller than 30cm
+      marker_pose_.pose = min_pose.pose;
+      snapped_pose_pub_.publish(min_pose);
+      // server_->setPose("footstep_marker", min_pose.pose);
+      // server_->applyChanges();
+      //ROS_WARN("projected");
+      return true;
+    }
+    else {
+      //ROS_WARN("not projected");
+      return false;
+    }
   }
 }
 
@@ -519,20 +546,25 @@ void FootstepMarker::processFeedbackCB(const visualization_msgs::InteractiveMark
   marker_pose_.pose = feedback->pose;
   marker_frame_id_ = feedback->header.frame_id;
   bool skip_plan = false;
-  if (feedback->event_type == visualization_msgs::InteractiveMarkerFeedback::MOUSE_UP) {
-    if (use_plane_snap_) {
-      if (!latest_planes_) {
-        ROS_WARN("no planes are available yet");
-      }
-      else {
-        // do something magicalc
-        skip_plan = !projectMarkerToPlane();
+  try {
+    if (feedback->event_type == visualization_msgs::InteractiveMarkerFeedback::MOUSE_UP) {
+      if (use_plane_snap_) {
+        if (!latest_grids_) {
+          ROS_WARN("no grids are available yet");
+        }
+        else {
+          // do something magicalc
+          skip_plan = !projectMarkerToPlane();
         
+        }
       }
     }
+    if (feedback->event_type == visualization_msgs::InteractiveMarkerFeedback::MOUSE_UP && !skip_plan) {
+      planIfPossible();
+    }
   }
-  if (feedback->event_type == visualization_msgs::InteractiveMarkerFeedback::MOUSE_UP && !skip_plan) {
-    planIfPossible();
+  catch (tf2::TransformException& e) {
+    ROS_ERROR("Failed to lookup transformation: %s", e.what());
   }
 }
 
@@ -664,7 +696,7 @@ void FootstepMarker::moveMarkerCB(const geometry_msgs::PoseStamped::ConstPtr& ms
   marker_pose_ = transformed_pose;
   bool skip_plan = false;
   if (use_plane_snap_) {
-    if (!latest_planes_) {
+    if (!latest_grids_) {
       ROS_WARN("no planes are available yet");
     }
     else {
@@ -769,16 +801,15 @@ FootstepMarker::~FootstepMarker() {
 }
 
 void FootstepMarker::planeCB(
-  const jsk_recognition_msgs::PolygonArray::ConstPtr& planes,
-  const jsk_recognition_msgs::ModelCoefficientsArray::ConstPtr& coefficients)
+  const jsk_recognition_msgs::SimpleOccupancyGridArray::ConstPtr& grid_msg)
 {
   boost::mutex::scoped_lock lock(plane_mutex_);
-  if (planes->polygons.size() > 0) {
-    latest_planes_ = planes;
-    latest_coefficients_ = coefficients;
+  ROS_INFO("new grid receievd");
+  if (grid_msg->grids.size() > 0) {
+    latest_grids_ = grid_msg;
   }
   else {
-    ROS_DEBUG_STREAM(__FUNCTION__ << " the size of the plane is 0, ignore");
+    ROS_INFO_STREAM(__FUNCTION__ << " the size of the grid is 0, ignore");
   }
 }
 
