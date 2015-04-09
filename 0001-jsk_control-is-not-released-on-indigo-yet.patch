@@ -1,10 +1,10 @@
-From 11df3be354585a718cd549ae81b5529837116efa Mon Sep 17 00:00:00 2001
+From 60d186300c311683dc36c4c38ac17d2bea69d82e Mon Sep 17 00:00:00 2001
 From: Kei Okada <kei.okada@gmail.com>
 Date: Fri, 30 Jan 2015 09:25:05 +0900
 Subject: [PATCH] jsk_control is not released on indigo yet
 
 ---
- package.xml | 2 +-
+ package.xml |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/package.xml b/package.xml
@@ -21,5 +21,5 @@ index 14cc588..4fd21e5 100644
    <!-- <test_depend>rospy</test_depend> -->
    <!-- <test_depend>visualization_msgs</test_depend> -->
 -- 
-1.9.1
+1.7.9.5
 
