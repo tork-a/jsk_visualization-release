@@ -2,6 +2,12 @@
 Changelog for package jsk_interactive_test
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.19 (2015-04-09)
+-------------------
+* Remove rosbuild files
+* [jsk_interactive_test] Remove joy_mouse dependency
+* Contributors: Ryohei Ueda
+
 1.0.18 (2015-01-30)
 -------------------
 
