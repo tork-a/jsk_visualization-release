@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -33,10 +33,10 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef JSK_RVIZ_PLUGINS_SPARSE_OCCUPANCY_GRID_ARRAY_DISPLAY_H_
-#define JSK_RVIZ_PLUGINS_SPARSE_OCCUPANCY_GRID_ARRAY_DISPLAY_H_
+#ifndef JSK_RVIZ_PLUGINS_SIMPLE_OCCUPANCY_GRID_ARRAY_DISPLAY_H_
+#define JSK_RVIZ_PLUGINS_SIMPLE_OCCUPANCY_GRID_ARRAY_DISPLAY_H_
 
-#include <jsk_recognition_msgs/SparseOccupancyGridArray.h>
+#include <jsk_recognition_msgs/SimpleOccupancyGridArray.h>
 #include <rviz/message_filter_display.h>
 #include <rviz/properties/float_property.h>
 #include <rviz/properties/bool_property.h>
@@ -46,39 +46,31 @@
 
 namespace jsk_rviz_plugins
 {
-  class SparseOccupancyGridArrayDisplay: public rviz::MessageFilterDisplay<jsk_recognition_msgs::SparseOccupancyGridArray>
+  class SimpleOccupancyGridArrayDisplay:
+    public rviz::MessageFilterDisplay<
+    jsk_recognition_msgs::SimpleOccupancyGridArray>
   {
     Q_OBJECT
   public:
     typedef boost::shared_ptr<rviz::PointCloud> PointCloudPtr;
-    SparseOccupancyGridArrayDisplay();
-    virtual ~SparseOccupancyGridArrayDisplay();
+    SimpleOccupancyGridArrayDisplay();
+    virtual ~SimpleOccupancyGridArrayDisplay();
   protected:
     virtual void onInitialize();
     virtual void reset();
     virtual void allocateCloudsAndNodes(const size_t num);
-    virtual QColor gridColor(double value);
-    virtual QColor axisColor(const Ogre::Quaternion& q,
-                             const Ogre::Vector3& p);
-    // ?? do we need to track the planes for efficient rendering?
-    rviz::ColorProperty* max_color_property_;
-    rviz::ColorProperty* min_color_property_;
     rviz::FloatProperty* alpha_property_;
-    rviz::BoolProperty* axis_color_property_;
+    rviz::BoolProperty* auto_color_property_;
     double alpha_;
     std::vector<rviz::PointCloud*> clouds_;
     std::vector<Ogre::SceneNode*> nodes_;
-    QColor max_color_;
-    QColor min_color_;
-    bool axis_color_;
+    bool auto_color_;
   private:
     void processMessage(
-      const jsk_recognition_msgs::SparseOccupancyGridArray::ConstPtr& msg);
+      const jsk_recognition_msgs::SimpleOccupancyGridArray::ConstPtr& msg);
   private Q_SLOTS:
     void updateAlpha();
-    void updateMaxColor();
-    void updateMinColor();
-    void updateAxisColor();
+    void updateAutoColor();
   };
 
 }
