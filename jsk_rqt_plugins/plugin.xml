@@ -1,4 +1,56 @@
 <library path="src">
+  <class name="StatusLight"
+         type="jsk_rqt_plugins.status_light.StatusLight"
+         base_class_type="rqt_gui_py::Plugin">
+    <qtgui>
+      <group>
+        <label>Visualization</label>
+        <icon type="theme">folder</icon>
+        <statustip>Plugins related to visualization.</statustip>
+      </group>
+      <label>Status</label>
+      <icon type="theme">utilities-system-monitor</icon>
+    </qtgui>
+  </class>
+  <class name="StringLabel"
+         type="jsk_rqt_plugins.label.StringLabel"
+         base_class_type="rqt_gui_py::Plugin">
+    <qtgui>
+      <group>
+        <label>Visualization</label>
+        <icon type="theme">folder</icon>
+        <statustip>Plugins related to visualization.</statustip>
+      </group>
+      <label>String</label>
+      <icon type="theme">utilities-system-monitor</icon>
+    </qtgui>
+  </class>
+  <class name="ImageView2Plugin"
+         type="jsk_rqt_plugins.image_view2_wrapper.ImageView2Plugin"
+         base_class_type="rqt_gui_py::Plugin">
+    <qtgui>
+      <group>
+        <label>Visualization</label>
+        <icon type="theme">folder</icon>
+        <statustip>Plugins related to visualization.</statustip>
+      </group>
+      <label>ImageView2</label>
+      <icon type="theme">utilities-system-monitor</icon>
+    </qtgui>
+  </class>
+  <class name="ServiceButtons"
+         type="jsk_rqt_plugins.button.ServiceButtons"
+         base_class_type="rqt_gui_py::Plugin">
+    <qtgui>
+      <group>
+        <label>Visualization</label>
+        <icon type="theme">folder</icon>
+        <statustip>Plugins related to visualization.</statustip>
+      </group>
+      <label>ServiceButton</label>
+      <icon type="theme">utilities-system-monitor</icon>
+    </qtgui>
+  </class>
   <class name="DRCEnvironmentViewer" type="jsk_rqt_plugins.mini_maxwell.DRCEnvironmentViewer" base_class_type="rqt_gui_py::Plugin">
     <qtgui>
       <group>
@@ -6,7 +58,7 @@
         <icon type="theme">folder</icon>
         <statustip>Plugins related to visualization.</statustip>
       </group>
-      <label>Plot3D</label>
+      <label>DRCEnvironment</label>
       <icon type="theme">utilities-system-monitor</icon>
     </qtgui>
   </class>
