@@ -15,7 +15,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/o2r other materials provided
  *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
+ *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -48,7 +48,7 @@ namespace jsk_rviz_plugins
 {
 
   PieChartDisplay::PieChartDisplay()
-    : rviz::Display()
+    : rviz::Display(), update_required_(false), first_time_(true), data_(0.0)
   {
     update_topic_property_ = new rviz::RosTopicProperty(
       "Topic", "",
@@ -158,6 +158,18 @@ namespace jsk_rviz_plugins
     overlay_->hide();
   }
 
+  void PieChartDisplay::update(float wall_dt, float ros_dt)
+  {
+    if (update_required_) {
+      update_required_ = false;
+      overlay_->updateTextureSize(texture_size_, texture_size_ + caption_offset_);
+      drawPlot(data_);
+      overlay_->setPosition(left_, top_);
+      overlay_->setDimensions(overlay_->getTextureWidth(),
+                              overlay_->getTextureHeight());
+    }
+  }
+  
   void PieChartDisplay::processMessage(const std_msgs::Float32::ConstPtr& msg)
   {
     boost::mutex::scoped_lock lock(mutex_);
@@ -165,12 +177,11 @@ namespace jsk_rviz_plugins
     if (!overlay_->isVisible()) {
       return;
     }
-
-    overlay_->updateTextureSize(texture_size_, texture_size_ + caption_offset_);
-    drawPlot(msg->data);
-    overlay_->setPosition(left_, top_);
-    overlay_->setDimensions(overlay_->getTextureWidth(),
-                            overlay_->getTextureHeight());
+    if (data_ != msg->data || first_time_) {
+      first_time_ = false;
+      data_ = msg->data;
+      update_required_ = true;
+    }
   }
   
   void PieChartDisplay::drawPlot(double val)
@@ -180,12 +191,15 @@ namespace jsk_rviz_plugins
     if (auto_color_change_) {
       double r
         = std::min(1.0, fabs((val - min_value_) / (max_value_ - min_value_)));
-      fg_color.setRed((max_color_.red() - fg_color_.red()) * r
-                      + fg_color_.red());
-      fg_color.setGreen((max_color_.green() - fg_color_.green()) * r
-                      + fg_color_.green());
-      fg_color.setBlue((max_color_.blue() - fg_color_.blue()) * r
-                       + fg_color_.blue());
+      if (r > 0.6) {
+        double r2 = (r - 0.6) / 0.4;
+        fg_color.setRed((max_color_.red() - fg_color_.red()) * r2
+                        + fg_color_.red());
+        fg_color.setGreen((max_color_.green() - fg_color_.green()) * r2
+                          + fg_color_.green());
+        fg_color.setBlue((max_color_.blue() - fg_color_.blue()) * r2
+                         + fg_color_.blue());
+      }
     }
 
     
@@ -274,6 +288,7 @@ namespace jsk_rviz_plugins
   {
     subscribe();
     overlay_->show();
+    first_time_ = true;
   }
 
   void PieChartDisplay::onDisable()
@@ -359,6 +374,12 @@ namespace jsk_rviz_plugins
   void PieChartDisplay::updateAutoColorChange()
   {
     auto_color_change_ = auto_color_change_property_->getBool();
+    if (auto_color_change_) {
+      max_color_property_->show();
+    }
+    else {
+      max_color_property_->hide();
+    }
   }
 
   void PieChartDisplay::updateMaxColor()
