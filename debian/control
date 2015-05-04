@@ -1,0 +1,12 @@
+Source: ros-hydro-jsk-rqt-plugins
+Section: misc
+Priority: extra
+Maintainer: Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-hydro-catkin, ros-hydro-image-view2, ros-hydro-mk, ros-hydro-rosbuild
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-hydro-jsk-rqt-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-urlgrabber, ros-hydro-cv-bridge, ros-hydro-image-view2, ros-hydro-qt-gui-py-common, ros-hydro-resource-retriever, ros-hydro-rqt-gui, ros-hydro-rqt-gui-py, ros-hydro-rqt-plot
+Description: The jsk_rqt_plugins package
