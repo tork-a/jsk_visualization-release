@@ -1,14 +1,14 @@
 from rqt_gui_py.plugin import Plugin
 from jsk_rqt_plugins.button_general import ServiceButtonGeneralWidget
 
-class ServiceButtons(Plugin):
+class ServiceRadioButtons(Plugin):
     """
     rqt class to provide multiple buttons
     """
     def __init__(self, context):
-        super(ServiceButtons, self).__init__(context)
-        self.setObjectName("ServiceButtons")
-        self._widget = ServiceButtonWidget()
+        super(ServiceRadioButtons, self).__init__(context)
+        self.setObjectName("ServiceRadioButtons")
+        self._widget = ServiceRadioButtonWidget()
         context.add_widget(self._widget)
     def save_settings(self, plugin_settings, instance_settings):
         self._widget.save_settings(plugin_settings, instance_settings)
@@ -17,9 +17,9 @@ class ServiceButtons(Plugin):
     def trigger_configuration(self):
         self._widget.trigger_configuration()
 
-class ServiceButtonWidget(ServiceButtonGeneralWidget):
+class ServiceRadioButtonWidget(ServiceButtonGeneralWidget):
     """
-    Qt widget to visualize multiple buttons
+    Qt widget to visualize multiple radio buttons
     """
     def __init__(self):
-        super(ServiceButtonWidget, self).__init__(button_type = "push")
+        super(ServiceRadioButtonWidget, self).__init__(button_type = "radio")
