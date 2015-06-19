@@ -48,7 +48,8 @@
 
 namespace jsk_rviz_plugins
 {
-  class BoundingBoxArrayDisplay: public rviz::MessageFilterDisplay<jsk_recognition_msgs::BoundingBoxArray>
+  class BoundingBoxArrayDisplay:
+    public rviz::MessageFilterDisplay<jsk_recognition_msgs::BoundingBoxArray>
   {
     Q_OBJECT
   public:
@@ -64,6 +65,16 @@ namespace jsk_rviz_plugins
     void allocateBillboardLines(int num);
     void allocateCoords(int num);
     QColor getColor(size_t index);
+    virtual bool isValid(
+      const jsk_recognition_msgs::BoundingBoxArray::ConstPtr& msg);
+    virtual void hideCoords();
+    virtual void showCoords(
+      const jsk_recognition_msgs::BoundingBoxArray::ConstPtr& msg);
+    virtual void showEdges(
+      const jsk_recognition_msgs::BoundingBoxArray::ConstPtr& msg);
+    virtual void showBoxes(
+      const jsk_recognition_msgs::BoundingBoxArray::ConstPtr& msg);
+    
     rviz::ColorProperty* color_property_;
     rviz::FloatProperty* alpha_property_;
     rviz::BoolProperty* only_edge_property_;
@@ -80,6 +91,8 @@ namespace jsk_rviz_plugins
     std::vector<BillboardLinePtr> edges_;
     std::vector<Ogre::SceneNode*> coords_nodes_;
     std::vector<std::vector<ArrowPtr> > coords_objects_;
+
+    jsk_recognition_msgs::BoundingBoxArray::ConstPtr latest_msg_;
   private Q_SLOTS:
     void updateColor();
     void updateAlpha();
@@ -88,7 +101,8 @@ namespace jsk_rviz_plugins
     void updateLineWidth();
     void updateShowCoords();
   private:
-    void processMessage(const jsk_recognition_msgs::BoundingBoxArray::ConstPtr& msg);
+    void processMessage(
+      const jsk_recognition_msgs::BoundingBoxArray::ConstPtr& msg);
   };
 
 }
