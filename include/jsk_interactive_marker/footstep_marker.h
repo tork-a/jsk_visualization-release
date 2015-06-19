@@ -84,6 +84,7 @@ protected:
   void snapLegs();
   geometry_msgs::Pose computeLegTransformation(uint8_t leg);
   geometry_msgs::Pose getFootstepPose(bool leftp);
+  void changePlannerHeuristic(const std::string& heuristic);
   void callEstimateOcclusion();
   void cancelWalk();
   void planIfPossible();
@@ -108,6 +109,8 @@ protected:
   void executeFootstep();
   void resumeFootstep();
 
+  void projectionCallback(const geometry_msgs::PoseStamped& pose);
+
   visualization_msgs::Marker makeFootstepMarker(geometry_msgs::Pose pose);
   
   boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server_;
@@ -123,7 +126,8 @@ protected:
   ros::Subscriber exec_sub_;
   ros::Subscriber resume_sub_;
   ros::Subscriber grid_sub_;
-  
+  ros::Subscriber projection_sub_;
+  ros::Publisher project_footprint_pub_;
   ros::Publisher snapped_pose_pub_;
   ros::Publisher footstep_pub_;
   ros::ServiceClient snapit_client_;
@@ -132,6 +136,7 @@ protected:
   PlanningActionClient ac_;
   ExecuteActionClient ac_exec_;
   bool use_projection_service_;
+  bool use_projection_topic_;
   bool show_6dof_control_;
   bool use_footstep_planner_;
   bool use_footstep_controller_;
@@ -140,6 +145,8 @@ protected:
   bool wait_snapit_server_;
   bool use_initial_footstep_tf_;
   bool use_initial_reference_;
+  bool always_planning_;
+  bool lleg_first_;
   std::string initial_reference_frame_;
   geometry_msgs::Pose lleg_pose_;
   geometry_msgs::Pose rleg_pose_;
