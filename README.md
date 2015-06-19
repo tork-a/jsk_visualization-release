@@ -1,7 +1,4 @@
-# jsk\_rqt\_plugins
+jsk_visualization [![Build Status](https://travis-ci.org/jsk-ros-pkg/jsk_visualization.png?branch=master)](https://travis-ci.org/jsk-ros-pkg/jsk_visualization)
+=================
 
-### rqt\_service\_button
-![](images/rqt_service_button.png)
-
-Generate service buttons according to the configuration written in yaml file.
-(sample yaml file: `jsk_rqt_plugins/resource/service_button_layout.yaml`)
+jsk visualization ros packages
