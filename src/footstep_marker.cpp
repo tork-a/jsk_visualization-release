@@ -50,10 +50,13 @@
 #include <jsk_pcl_ros/pcl_conversion_util.h>
 #include <jsk_pcl_ros/tf_listener_singleton.h>
 #include <jsk_interactive_marker/SnapFootPrint.h>
+#include <jsk_interactive_marker/SnapFootPrintInput.h>
+#include <jsk_interactive_marker/SetHeuristic.h>
+#include <jsk_topic_tools/log_utils.h>
 
 FootstepMarker::FootstepMarker():
 ac_("footstep_planner", true), ac_exec_("footstep_controller", true),
-  plan_run_(false) {
+plan_run_(false), lleg_first_(true) {
   // read parameters
   tf_listener_.reset(new tf::TransformListener);
   ros::NodeHandle pnh("~");
@@ -65,22 +68,39 @@ ac_("footstep_planner", true), ac_exec_("footstep_controller", true),
   pnh.param("rfoot_frame_id", rfoot_frame_id_, std::string("rfsensor"));
   pnh.param("show_6dof_control", show_6dof_control_, true);
   pnh.param("use_projection_service", use_projection_service_, false);
+  pnh.param("use_projection_topic", use_projection_topic_, false);
+  pnh.param("always_planning", always_planning_, true);
+  if (use_projection_topic_) {
+    project_footprint_pub_ = pnh.advertise<jsk_interactive_marker::SnapFootPrintInput>("project_footprint", 1);
+  }
   // read lfoot_offset
   readPoseParam(pnh, "lfoot_offset", lleg_offset_);
   readPoseParam(pnh, "rfoot_offset", rleg_offset_);
   
-  pnh.param("footstep_margin", footstep_margin_, 0.2);
+  //pnh.param("footstep_margin", footstep_margin_, 0.2);
+  char* ROBOT_NAME = getenv("ROBOT");
+  if (strcmp(ROBOT_NAME, "HRP2JSK") == 0 ||
+      strcmp(ROBOT_NAME, "HRP2JSKNT") == 0 ||
+      strcmp(ROBOT_NAME, "HRP2JSKNTS") == 0) {
+    footstep_margin_ = 0.21;
+  }
+  else if (strcmp(ROBOT_NAME, "JAXON") == 0 ||
+           strcmp(ROBOT_NAME, "JAXON_RED") == 0) {
+    footstep_margin_ = 0.2;
+  }
   pnh.param("use_footstep_planner", use_footstep_planner_, true);
   pnh.param("use_plane_snap", use_plane_snap_, true);
   pnh.param("use_footstep_controller", use_footstep_controller_, true);
   pnh.param("use_initial_footstep_tf", use_initial_footstep_tf_, true);
   pnh.param("wait_snapit_server", wait_snapit_server_, false);
+  bool nowait = true;
+  pnh.param("no_wait", nowait, true);
   pnh.param("frame_id", marker_frame_id_, std::string("/map"));
   footstep_pub_ = nh.advertise<jsk_footstep_msgs::FootstepArray>("footstep_from_marker", 1);
   snapit_client_ = nh.serviceClient<jsk_pcl_ros::CallSnapIt>("snapit");
   snapped_pose_pub_ = pnh.advertise<geometry_msgs::PoseStamped>("snapped_pose", 1);
   estimate_occlusion_client_ = nh.serviceClient<std_srvs::Empty>("require_estimation");
-  if (wait_snapit_server_) {
+  if (!nowait && wait_snapit_server_) {
     snapit_client_.waitForExistence();
   }
   
@@ -114,6 +134,14 @@ ac_("footstep_planner", true), ac_exec_("footstep_controller", true),
                         boost::bind(&FootstepMarker::menuFeedbackCB, this, _1));
   // menu_handler_.insert( "Resume Footstep",
   //                     boost::bind(&FootstepMarker::menuFeedbackCB, this, _1));
+  menu_handler_.insert("Straight Heuristic",
+                       boost::bind(&FootstepMarker::menuFeedbackCB, this, _1));
+  menu_handler_.insert("Stepcost Heuristic**",
+                       boost::bind(&FootstepMarker::menuFeedbackCB, this, _1));
+  menu_handler_.insert("LLeg First",
+                       boost::bind(&FootstepMarker::menuFeedbackCB, this, _1));
+  menu_handler_.insert("RLeg First",
+                       boost::bind(&FootstepMarker::menuFeedbackCB, this, _1));
   marker_pose_.header.frame_id = marker_frame_id_;
   marker_pose_.header.stamp = ros::Time::now();
   marker_pose_.pose.orientation.w = 1.0;
@@ -192,7 +220,10 @@ ac_("footstep_planner", true), ac_exec_("footstep_controller", true),
     ROS_INFO("resolved transform {%s, %s} => %s", lfoot_frame_id_.c_str(),
              rfoot_frame_id_.c_str(), marker_frame_id_.c_str());
   }
-
+  if (use_projection_topic_) {
+    projection_sub_ = pnh.subscribe("projected_pose", 1,
+                                    &FootstepMarker::projectionCallback, this);
+  }
 }
 
 // a function to read double value from XmlRpcValue.
@@ -400,9 +431,38 @@ void FootstepMarker::processMenuFeedback(uint8_t menu_entry_id) {
     show_6dof_control_ = !show_6dof_control_;
     break;
   }
+  case 6: {                     // toggle 6dof marker
+    changePlannerHeuristic(":straight-heuristic");
+    break;
+  }
+  case 7: {                     // toggle 6dof marker
+    changePlannerHeuristic(":stepcost-heuristic**");
+    break;
+  }
+  case 8: {                     // toggle 6dof marker
+    lleg_first_ = true;
+    break;
+  }
+  case 9: {                     // toggle 6dof marker
+    lleg_first_ = false;
+    break;
+  }
+    
   default: {
     break;
   }
+  }
+}
+
+void FootstepMarker::changePlannerHeuristic(const std::string& heuristic)
+{
+  jsk_interactive_marker::SetHeuristic heuristic_req;
+  heuristic_req.request.heuristic = heuristic;
+  if (!ros::service::call("/footstep_planner/set_heuristic", heuristic_req)) {
+    JSK_ROS_ERROR("failed to set heuristic");
+  }
+  else {
+    JSK_ROS_INFO("Success to set heuristic: %s", heuristic.c_str());
   }
 }
 
@@ -445,12 +505,21 @@ bool FootstepMarker::projectMarkerToPlane()
       else {
         return false;
       }
-      
     }
     else {
       ROS_WARN("Failed to snap footprint");
       return false;
     }
+  }
+  else if (use_projection_topic_) {
+    jsk_interactive_marker::SnapFootPrintInput msg;
+    msg.input_pose = marker_pose_;
+    msg.lleg_pose.orientation.w = 1.0;
+    msg.rleg_pose.orientation.w = 1.0;
+    msg.lleg_pose.position.y = footstep_margin_ / 2.0;
+    msg.rleg_pose.position.y = - footstep_margin_ / 2.0;
+    project_footprint_pub_.publish(msg);
+    return true;                // true...?
   }
   else {
     if (latest_grids_->grids.size() == 0) {
@@ -548,7 +617,7 @@ void FootstepMarker::processFeedbackCB(const visualization_msgs::InteractiveMark
   try {
     if (feedback->event_type == visualization_msgs::InteractiveMarkerFeedback::MOUSE_UP) {
       if (use_plane_snap_) {
-        if (!latest_grids_) {
+        if (!use_projection_topic_ && !latest_grids_) {
           ROS_WARN("no grids are available yet");
         }
         else {
@@ -559,7 +628,7 @@ void FootstepMarker::processFeedbackCB(const visualization_msgs::InteractiveMark
       }
     }
     if (feedback->event_type == visualization_msgs::InteractiveMarkerFeedback::MOUSE_UP && !skip_plan) {
-      planIfPossible();
+      if (always_planning_) planIfPossible();
     }
   }
   catch (tf2::TransformException& e) {
@@ -579,6 +648,21 @@ void FootstepMarker::resumeFootstep() {
   jsk_footstep_msgs::ExecFootstepsGoal goal;
   goal.strategy = jsk_footstep_msgs::ExecFootstepsGoal::RESUME;
   ac_exec_.sendGoal(goal);
+}
+
+void FootstepMarker::projectionCallback(const geometry_msgs::PoseStamped& pose)
+{
+  geometry_msgs::PoseStamped resolved_pose;
+  tf_listener_->transformPose(marker_pose_.header.frame_id,
+                              pose,
+                              resolved_pose);
+  // Check distance to project
+  Eigen::Vector3d projected_point, marker_point;
+  tf::pointMsgToEigen(marker_pose_.pose.position, marker_point);
+  tf::pointMsgToEigen(resolved_pose.pose.position, projected_point);
+  if ((projected_point - marker_point).norm() < 0.3) {
+    marker_pose_.pose = resolved_pose.pose;
+  }
 }
 
 void FootstepMarker::executeFootstep() {
@@ -634,11 +718,18 @@ void FootstepMarker::planIfPossible() {
     jsk_footstep_msgs::Footstep initial_left;
     initial_left.leg = jsk_footstep_msgs::Footstep::LEFT;
     initial_left.pose = lleg_initial_pose_;
-    initial_footstep.footsteps.push_back(initial_left);
+    
     jsk_footstep_msgs::Footstep initial_right;
     initial_right.leg = jsk_footstep_msgs::Footstep::RIGHT;
     initial_right.pose = rleg_initial_pose_;
-    initial_footstep.footsteps.push_back(initial_right);
+    if (lleg_first_) {
+      initial_footstep.footsteps.push_back(initial_left);
+      initial_footstep.footsteps.push_back(initial_right);
+    }
+    else {
+      initial_footstep.footsteps.push_back(initial_right);
+      initial_footstep.footsteps.push_back(initial_left);
+    }
     goal.initial_footstep = initial_footstep;
     ac_.sendGoal(goal, boost::bind(&FootstepMarker::planDoneCB, this, _1, _2));
   }
