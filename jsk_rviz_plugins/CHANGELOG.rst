@@ -2,6 +2,12 @@
 Changelog for package jsk_rviz_plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.22 (2015-06-24)
+-------------------
+* [jsk_rviz_plugins/OverlayImage] Support alpha channel if image_encoding
+  is BGRA8 or RGBA8
+* Contributors: Ryohei Ueda
+
 1.0.21 (2015-06-11)
 -------------------
 * [jsk_rviz_plugins/PolygonArrayDisplay] Cleanup codes to be within 80 columns
