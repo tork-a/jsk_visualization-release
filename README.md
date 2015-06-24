@@ -1,3 +1,30 @@
+## jsk_visualization (hydro) - 1.0.22-0
+
+The packages in the `jsk_visualization` repository were released into the `hydro` distro by running `/var/lib/jenkins/send_to_bloom.py jsk-ros-pkg jsk_visualization` on `Wed, 24 Jun 2015 12:22:36 -0000`
+
+These packages were released:
+- `jsk_interactive`
+- `jsk_interactive_marker`
+- `jsk_interactive_test`
+- `jsk_rqt_plugins`
+- `jsk_rviz_plugins`
+- `jsk_visualization`
+
+Version of package(s) in repository `jsk_visualization`:
+- upstream repository: https://github.com/jsk-ros-pkg/jsk_visualization
+- release repository: https://github.com/tork-a/jsk_visualization-release.git
+- rosdistro version: `1.0.21-0`
+- old version: `1.0.21-0`
+- new version: `1.0.22-0`
+
+Versions of tools used:
+- bloom version: `0.5.19`
+- catkin_pkg version: `0.2.8`
+- rosdep version: `0.11.2`
+- rosdistro version: `0.4.2`
+- vcstools version: `0.1.36`
+
+
 ## jsk_visualization (indigo) - 1.0.21-1
 
 The packages in the `jsk_visualization` repository were released into the `indigo` distro by running `/var/lib/jenkins/send_to_bloom.py jsk-ros-pkg jsk_visualization` on `Fri, 19 Jun 2015 04:57:15 -0000`
