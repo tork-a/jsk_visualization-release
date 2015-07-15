@@ -1,0 +1,158 @@
+ros-hydro-jsk-visualization (1.0.23-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 14 Jul 2015 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.22-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 23 Jun 2015 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.21-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 10 Jun 2015 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.20-0precise) precise; urgency=high
+
+  * [jsk_visualization] Add jsk_visualization meta package
+  * Contributors: Ryohei Ueda
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 03 May 2015 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.19-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 08 Apr 2015 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.18-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 29 Jan 2015 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.17-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 28 Jan 2015 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.16-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 03 Jan 2015 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.15-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 12 Dec 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.14-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 08 Dec 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.13-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 09 Oct 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.12-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 22 Sep 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.11-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 21 Sep 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.10-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 12 Sep 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.9-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 06 Sep 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.8-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 03 Sep 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.7-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 05 Aug 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.6-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 13 Jul 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.5-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 28 Jun 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.4-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 30 May 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.3-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 21 May 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.2-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 20 May 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.1-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 19 May 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (1.0.0-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 16 May 2014 15:00:00 -0000
+
+ros-hydro-jsk-visualization (0.0.3-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 15 May 2014 05:00:00 -0000
+
+ros-hydro-jsk-visualization (0.0.2-0precise) precise; urgency=high
+
+
+
+ -- Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 15 May 2014 02:06:00 -0000
+
+
