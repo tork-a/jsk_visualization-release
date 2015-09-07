@@ -24,7 +24,7 @@ find_package(Boost REQUIRED COMPONENTS system)
 
 add_message_files(
   DIRECTORY msg
-  FILES JointTrajectoryPointWithType.msg JointTrajectoryWithType.msg MarkerDimensions.msg MarkerMenu.msg MarkerPose.msg MoveModel.msg MoveObject.msg SnapFootPrintInput.msg
+  FILES JointTrajectoryPointWithType.msg JointTrajectoryWithType.msg MarkerDimensions.msg MarkerMenu.msg MarkerPose.msg MoveModel.msg MoveObject.msg SnapFootPrintInput.msg PoseStampedWithName.msg
 )
 add_service_files(DIRECTORY srv
   FILES MarkerSetPose.srv SetPose.srv GetJointState.srv GetType.srv SetMarkerDimensions.srv GetMarkerDimensions.srv GetTransformableMarkerPose.srv SetTransformableMarkerPose.srv GetTransformableMarkerColor.srv SetTransformableMarkerColor.srv GetTransformableMarkerFocus.srv SetTransformableMarkerFocus.srv GetTransformableMarkerExistence.srv IndexRequest.srv
@@ -32,6 +32,7 @@ add_service_files(DIRECTORY srv
   SetHeuristic.srv)
 
 generate_dynamic_reconfigure_options(
+  cfg/FootstepMarker.cfg
   cfg/InteractivePointCloud.cfg
   cfg/PointCloudCropper.cfg
   cfg/CameraInfoPublisher.cfg
@@ -119,7 +120,7 @@ generate_messages(
 
 catkin_package(
     DEPENDS TinyXML
-    CATKIN_DEPENDS  geometry_msgs jsk_footstep_msgs tf_conversions actionlib jsk_rviz_plugins
+    CATKIN_DEPENDS  geometry_msgs jsk_footstep_msgs tf_conversions actionlib jsk_rviz_plugins jsk_recognition_msgs
     INCLUDE_DIRS include # TODO include
     LIBRARIES jsk_interactive_marker # TODO
 )
