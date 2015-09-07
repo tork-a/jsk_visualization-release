@@ -51,9 +51,6 @@ add_definitions(-DQT_NO_KEYWORDS -g)
 #include(${wxWidgets_USE_FILE})
 #include_directories( ${wxWidgets_INCLUDE_DIRS} )
 
-qt4_wrap_ui(UIC_FILES
-  config/robot_command_interface.ui
-  )
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 #set(SOURCE_FILES src/ambient_sound_display.cpp src/ambient_sound_visual.cpp)
@@ -94,6 +91,7 @@ qt4_wrap_cpp(MOC_FILES
   src/video_capture_display.h
   src/twist_stamped_display.h
   src/pose_array_display.h
+  src/tf_trajectory_display.h
 )
 
 set(SOURCE_FILES
@@ -138,6 +136,7 @@ set(SOURCE_FILES
   src/video_capture_display.cpp
   src/twist_stamped_display.cpp
   src/pose_array_display.cpp
+  src/tf_trajectory_display.cpp
   ${MOC_FILES}
 )
 
