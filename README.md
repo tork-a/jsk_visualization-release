@@ -25,6 +25,11 @@ Plug the depth sensor which could be launched by openni.launch and execute below
 roslaunch jsk_rviz_plugins normal_sample.launch
 ```
 
+#### TFTrajectory
+![https://youtu.be/d9YZWJ5bBZ8](images/tf_trajectory.png)
+
+Visualize trajectory of a tf frame.
+
 #### [TwistStamped](http://youtu.be/Q-I5Vx_4VHk)
 ![](images/twist_stamped.png)
 
@@ -170,6 +175,19 @@ This will publish std_msgs/Empty to the topic you designate.
 ![RobotCommandInterfaceAction](images/robot_command_interface_action.png)
 
 This will call service to /eus_command with jsk_rviz_plugins/EusCommand srv.
+All the buttons are configured via `~robot_command_buttons` parameters.
+See `robot_command_interface_sample.launch` file to know how to use it.
+
+Parameter format is:
+```yaml
+robot_command_buttons:
+  - name: <name, required>
+    icon: <path to icon file, optional>
+    type: <"euscommand" or "emptysrv", required>
+    command: <S expression to send to eusclient, required if type is euscommand>
+    srv: <service name, required if type is "emptysrv">
+  - name: ...
+```
 
 #### SelectPointCloudPublishAction
 ![SelectPointCloudPublishAction](images/select_point_cloud_publish_action.png)
