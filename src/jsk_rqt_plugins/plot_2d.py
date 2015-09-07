@@ -19,8 +19,8 @@ from cStringIO import StringIO
 import cv2
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
-from jsk_recognition_msgs.msg import HistogramWithRange, HistogramWithRangeBin
-
+from jsk_recognition_msgs.msg import PlotData
+import numpy as np
 import os, sys
 import argparse
 
@@ -54,28 +54,39 @@ class ROSData(_ROSData):
 
 
 
-class HistogramPlot(Plugin):
+class Plot2D(Plugin):
     def __init__(self, context):
-        super(HistogramPlot, self).__init__(context)
-        self.setObjectName('HistogramPlot')
+        super(Plot2D, self).__init__(context)
+        self.setObjectName('Plot2D')
         self._args = self._parse_args(context.argv())
-        self._widget = HistogramPlotWidget(self._args.topics)
+        self._widget = Plot2DWidget(self._args.topics)
+        self._widget.is_line = self._args.line
+        self._widget.fit_line = self._args.fit_line
+        self._widget.xtitle = self._args.xtitle
+        self._widget.ytitle = self._args.ytitle
+        self._widget.no_legend = self._args.no_legend
+        self._widget.sort_x = self._args.sort_x
         context.add_widget(self._widget)
     def _parse_args(self, argv):
         parser = argparse.ArgumentParser(prog='rqt_histogram_plot', add_help=False)
-        HistogramPlot.add_arguments(parser)
+        Plot2D.add_arguments(parser)
         args = parser.parse_args(argv)
         return args
     @staticmethod
     def add_arguments(parser):
         group = parser.add_argument_group('Options for rqt_histogram plugin')
         group.add_argument('topics', nargs='?', default=[], help='Topics to plot')
-        
-class HistogramPlotWidget(QWidget):
+        group.add_argument('--line', action="store_true", help="Plot with lines instead of scatter")
+        group.add_argument('--fit-line', action="store_true", help="Plot line with least-square fitting")
+        group.add_argument('--xtitle', help="Title in X axis")
+        group.add_argument('--ytitle', help="Title in Y axis")
+        group.add_argument('--no-legend', action="store_true")
+        group.add_argument('--sort-x', action="store_true")
+class Plot2DWidget(QWidget):
     _redraw_interval = 40
     def __init__(self, topics):
-        super(HistogramPlotWidget, self).__init__()
-        self.setObjectName('HistogramPlotWidget')
+        super(Plot2DWidget, self).__init__()
+        self.setObjectName('Plot2DWidget')
         rp = rospkg.RosPack()
         ui_file = os.path.join(rp.get_path('jsk_rqt_plugins'), 
                                'resource', 'plot_histogram.ui')
@@ -84,7 +95,7 @@ class HistogramPlotWidget(QWidget):
         self.subscribe_topic_button.setIcon(QIcon.fromTheme('add'))
         self.pause_button.setIcon(QIcon.fromTheme('media-playback-pause'))
         self.clear_button.setIcon(QIcon.fromTheme('edit-clear'))
-        self.data_plot = MatHistogramPlot(self)
+        self.data_plot = MatPlot2D(self)
         self.data_plot_layout.addWidget(self.data_plot)
         self._topic_completer = TopicCompleter(self.topic_edit)
         self._topic_completer.update_topics()
@@ -149,20 +160,36 @@ class HistogramPlotWidget(QWidget):
             return
         axes = self.data_plot._canvas.axes
         axes.cla()
-        if self._rosdata.sub.data_class is HistogramWithRange:
-            xs = [y.count for y in data_y[-1].bins]
-            pos = [y.min_value for y in data_y[-1].bins]
-            widths = [y.max_value - y.min_value for y in data_y[-1].bins]
-            axes.set_xlim(xmin=pos[0], xmax=pos[-1] + widths[-1])
+        # matplotlib
+        # concatenate x and y in order to sort
+        concatenated_data = zip(data_y[-1].xs, data_y[-1].ys)
+        if self.sort_x:
+            concatenated_data.sort(key=lambda x: x[0])
+        xs = [d[0] for d in concatenated_data]
+        ys = [d[1] for d in concatenated_data]
+        if self.is_line:
+            axes.plot(xs, ys)
         else:
-            xs = data_y[-1]
-            pos = np.arange(len(xs))
-            widths = [1] * len(xs)
-            axes.set_xlim(xmin=0, xmax=len(xs))
-        #axes.xticks(range(5))
-        for p, x, w in zip(pos, xs, widths):
-            axes.bar(p, x, color='r', align='center', width=w)
-        axes.legend([self.topic_with_field_name], prop={'size': '8'})
+            axes.scatter(xs, ys)
+        # set limit
+        axes.set_xlim(min(xs), max(xs))
+        axes.set_ylim(min(ys), max(ys))
+        # line fitting
+        if self.fit_line:
+            X = np.array(data_y[-1].xs)
+            Y = np.array(data_y[-1].ys)
+            A = np.array([X,np.ones(len(X))])
+            A = A.T
+            a,b = np.linalg.lstsq(A,Y)[0]
+            axes.plot(X,(a*X+b),"g--")
+        
+        axes.grid()
+        if not self.no_legend:
+            axes.legend([self.topic_with_field_name], prop={'size': '8'})
+        if self.xtitle:
+            axes.set_xlabel(self.xtitle)
+        if self.ytitle:
+            axes.set_ylabel(self.ytitle)
         self.data_plot._canvas.draw()
         buffer = StringIO()
         self.data_plot._canvas.figure.savefig(buffer, format="png")
@@ -170,20 +197,21 @@ class HistogramPlotWidget(QWidget):
         img_array = np.asarray(bytearray(buffer.read()), dtype=np.uint8)
         img = cv2.imdecode(img_array, cv2.CV_LOAD_IMAGE_COLOR)
         self.pub_image.publish(self.cv_bridge.cv2_to_imgmsg(img, "bgr8"))
-class MatHistogramPlot(QWidget):
+        
+class MatPlot2D(QWidget):
     class Canvas(FigureCanvas):
         def __init__(self, parent=None):
-            super(MatHistogramPlot.Canvas, self).__init__(Figure())
+            super(MatPlot2D.Canvas, self).__init__(Figure())
             self.axes = self.figure.add_subplot(111)
             self.figure.tight_layout()
             self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             self.updateGeometry()
         def resizeEvent(self, event):
-            super(MatHistogramPlot.Canvas, self).resizeEvent(event)
+            super(MatPlot2D.Canvas, self).resizeEvent(event)
             self.figure.tight_layout()
     def __init__(self, parent=None):
-        super(MatHistogramPlot, self).__init__(parent)
-        self._canvas = MatHistogramPlot.Canvas()
+        super(MatPlot2D, self).__init__(parent)
+        self._canvas = MatPlot2D.Canvas()
         self._toolbar = NavigationToolbar(self._canvas, self._canvas)
         vbox = QVBoxLayout()
         vbox.addWidget(self._toolbar)
