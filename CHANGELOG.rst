@@ -2,6 +2,11 @@
 Changelog for package jsk_interactive_marker
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.27 (2015-12-08)
+-------------------
+* Use ccache to make it faster to generate object file
+* Contributors: Kentaro Wada
+
 1.0.26 (2015-12-03)
 -------------------
 * [jsk_interactive_marker] add initialization for marker control
