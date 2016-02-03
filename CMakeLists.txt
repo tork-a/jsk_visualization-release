@@ -18,6 +18,7 @@ endif()
 
 
 find_package(catkin REQUIRED COMPONENTS
+  message_generation
   cmake_modules jsk_pcl_ros jsk_footstep_msgs geometry_msgs visualization_msgs
   dynamic_reconfigure jsk_rviz_plugins
   interactive_markers dynamic_tf_publisher tf_conversions eigen_conversions
@@ -36,7 +37,7 @@ add_message_files(
   FILES JointTrajectoryPointWithType.msg JointTrajectoryWithType.msg MarkerDimensions.msg MarkerMenu.msg MarkerPose.msg MoveModel.msg MoveObject.msg SnapFootPrintInput.msg PoseStampedWithName.msg
 )
 add_service_files(DIRECTORY srv
-  FILES MarkerSetPose.srv SetPose.srv GetJointState.srv GetType.srv SetMarkerDimensions.srv GetMarkerDimensions.srv GetTransformableMarkerPose.srv SetTransformableMarkerPose.srv GetTransformableMarkerColor.srv SetTransformableMarkerColor.srv GetTransformableMarkerFocus.srv SetTransformableMarkerFocus.srv GetTransformableMarkerExistence.srv IndexRequest.srv
+  FILES MarkerSetPose.srv SetPose.srv GetJointState.srv GetType.srv SetMarkerDimensions.srv GetMarkerDimensions.srv GetTransformableMarkerPose.srv SetTransformableMarkerPose.srv GetTransformableMarkerColor.srv SetTransformableMarkerColor.srv GetTransformableMarkerFocus.srv SetTransformableMarkerFocus.srv GetTransformableMarkerExistence.srv IndexRequest.srv SetParentMarker.srv RemoveParentMarker.srv
   SnapFootPrint.srv
   SetHeuristic.srv)
 
@@ -105,7 +106,11 @@ add_executable(bounding_box_marker src/bounding_box_marker.cpp)
 target_link_libraries(bounding_box_marker ${catkin_LIBRARIES} ${orocos_kdl_LIBRARIES} ${Boost_LIBRARIES} jsk_interactive_marker)
 add_dependencies(bounding_box_marker ${PROJECT_NAME}_generate_messages_cpp ${PROJECT_NAME}_gencfg ${catkin_EXPORTED_TARGETS})
 
-add_executable(interactive_point_cloud src/interactive_point_cloud_node.cpp src/interactive_point_cloud.cpp)
+add_executable(polygon_marker src/polygon_marker.cpp)
+target_link_libraries(polygon_marker ${catkin_LIBRARIES} ${orocos_kdl_LIBRARIES} ${Boost_LIBRARIES} jsk_interactive_marker)
+add_dependencies(polygon_marker ${PROJECT_NAME}_generate_messages_cpp ${PROJECT_NAME}_gencfg ${catkin_EXPORTED_TARGETS})
+
+add_executable(interactive_point_cloud src/interactive_point_cloud_node.cpp src/interactive_point_cloud.cpp src/parent_and_child_interactive_marker_server.cpp)
 target_link_libraries(interactive_point_cloud ${catkin_LIBRARIES} ${orocos_kdl_LIBRARIES} ${Boost_LIBRARIES} jsk_interactive_marker)
 add_dependencies(interactive_point_cloud ${PROJECT_NAME}_generate_messages_cpp ${PROJECT_NAME}_gencfg ${catkin_EXPORTED_TARGETS})
 
@@ -117,6 +122,7 @@ add_dependencies(pointcloud_cropper ${PROJECT_NAME}_generate_messages_cpp ${PROJ
 add_executable(transformable_server_sample
   src/transformable_object.cpp
   src/yaml_menu_handler.cpp
+  src/parent_and_child_interactive_marker_server.cpp
   src/transformable_interactive_server.cpp
   src/transformable_server_sample.cpp
 )
@@ -130,7 +136,7 @@ generate_messages(
 
 catkin_package(
     DEPENDS TinyXML
-    CATKIN_DEPENDS  geometry_msgs jsk_footstep_msgs tf_conversions actionlib jsk_rviz_plugins jsk_recognition_msgs
+    CATKIN_DEPENDS  geometry_msgs jsk_footstep_msgs tf_conversions actionlib jsk_rviz_plugins jsk_recognition_msgs message_runtime
     INCLUDE_DIRS include # TODO include
     LIBRARIES jsk_interactive_marker # TODO
 )
@@ -138,7 +144,7 @@ catkin_package(
 find_package(PkgConfig)
 pkg_check_modules(yaml_cpp yaml-cpp REQUIRED)
 if(${yaml_cpp_VERSION} VERSION_LESS "0.5.0")
-## indigo yaml-cpp : 0.5.0 /  hydro yaml-cpp : 0.3.0 
+## indigo yaml-cpp : 0.5.0 /  hydro yaml-cpp : 0.3.0
   add_definitions("-DUSE_OLD_YAML")
 endif()
 
@@ -163,6 +169,7 @@ install(TARGETS
   marker_6dof
   world2yaml
   bounding_box_marker
+  polygon_marker
   interactive_point_cloud
   pointcloud_cropper
   transformable_server_sample
