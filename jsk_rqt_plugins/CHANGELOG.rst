@@ -2,6 +2,9 @@
 Changelog for package jsk_rqt_plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.29 (2016-03-20)
+-------------------
+
 1.0.28 (2016-02-03)
 -------------------
 * Except NavigationToolbar ImportError from matplotlib
