@@ -1,15 +1,26 @@
-jsk_visualization
-=================
- [![Build Status](https://travis-ci.org/jsk-ros-pkg/jsk_visualization.svg?branch=master)](https://travis-ci.org/jsk-ros-pkg/jsk_visualization)
-[![Read the Docs](https://readthedocs.org/projects/pip/badge/?version=latest)](https://jsk-visualization.readthedocs.org)
-jsk visualization ros packages
+# Usage
+## urdf_model_markers.launch
+This launch file generates interactive markers from urdf models.
+```
+$ roslaunch jsk_interactive_marker urdf_model_markers.launch models:=/path/to/model.yaml
+```
 
-see [read the docs](http://jsk-visualization.readthedocs.org/en/latest/)
+### example
+```
+$ roslaunch jsk_interactive_marker urdf_model_markers.launch models:=`rospack find jsk_interactive_marker`/launch/models/urdf_model_markers.yaml
+```
 
-Deb Build Status
-----------------
+## room2yaml.l
+This script generates yaml files for urdf_model_marker.
+```
+$ roscd jsk_interactive_marker/euslisp
+$ rosrun roseus roseus room2yaml.l
+```
 
-| Package | Indigo (Saucy) | Indigo (Trusty) |
-|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| jsk_visualization (32-bit) | [![Build Status](http://build.ros.org/job/Ibin_uS32__jsk_visualization__ubuntu_saucy_i386__binary/badge/icon)](http://build.ros.org/job/Ibin_uS32__jsk_visualization__ubuntu_saucy_i386__binary/) | [![Build Status](http://build.ros.org/job/Ibin_uT32__jsk_visualization__ubuntu_trusty_i386__binary/badge/icon)](http://build.ros.org/job/Ibin_uT32__jsk_visualization__ubuntu_trusty_i386__binary/) |
-| jsk_visualization (64-bit) | [![Build Status](http://build.ros.org/job/Ibin_uS64__jsk_visualization__ubuntu_saucy_amd64__binary/badge/icon)](http://build.ros.org/job/Ibin_uS64__jsk_visualization__ubuntu_saucy_amd64__binary/) | [![Build Status](http://build.ros.org/job/Ibin_uT64__jsk_visualization__ubuntu_trusty_amd64__binary/badge/icon)](http://build.ros.org/job/Ibin_uT64__jsk_visualization__ubuntu_trusty_amd64__binary/) |
+## robot_actions_sample.launch
+This is a sample launch file to test urdf_model_marker and robot-actions.l.
+Before launching this, You need to execute room2yaml.l once.
+```
+$ roslaunch jsk_interactive_marker robot_actions_sample.launch
+```
+![images/robot_actions_sample_launch.png](images/robot_actions_sample_launch.png)
