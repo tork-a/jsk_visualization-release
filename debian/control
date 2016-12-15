@@ -1,0 +1,12 @@
+Source: ros-indigo-jsk-interactive-test
+Section: misc
+Priority: extra
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-indigo-catkin, ros-indigo-jsk-interactive, ros-indigo-jsk-interactive-marker, ros-indigo-mk, ros-indigo-rosbuild, ros-indigo-rospy, ros-indigo-visualization-msgs
+Homepage: http://ros.org/wiki/jsk_interactive_test
+Standards-Version: 3.9.2
+
+Package: ros-indigo-jsk-interactive-test
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-jsk-interactive, ros-indigo-jsk-interactive-marker, ros-indigo-rospy, ros-indigo-rviz, ros-indigo-visualization-msgs
+Description: jsk_interactive_test
