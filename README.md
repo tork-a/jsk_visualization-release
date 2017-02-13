@@ -1,3 +1,32 @@
+## jsk_visualization (jade) - 2.1.0-0
+
+The packages in the `jsk_visualization` repository were released into the `jade` distro by running `./send_to_bloom.py jsk-ros-pkg jsk_visualization` on `Mon, 13 Feb 2017 13:15:20 -0000`
+
+These packages were released:
+- `jsk_interactive`
+- `jsk_interactive_marker`
+- `jsk_interactive_test`
+- `jsk_rqt_plugins`
+- `jsk_rviz_plugins`
+- `jsk_visualization`
+
+Version of package(s) in repository `jsk_visualization`:
+
+- upstream repository: https://github.com/jsk-ros-pkg/jsk_visualization
+- release repository: https://github.com/tork-a/jsk_visualization-release.git
+- rosdistro version: `2.0.1-0`
+- old version: `2.0.1-0`
+- new version: `2.1.0-0`
+
+Versions of tools used:
+
+- bloom version: `0.5.23`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.5.0`
+- vcstools version: `0.1.39`
+
+
 ## jsk_visualization (indigo) - 2.1.0-0
 
 The packages in the `jsk_visualization` repository were released into the `indigo` distro by running `./send_to_bloom.py jsk-ros-pkg jsk_visualization` on `Mon, 13 Feb 2017 13:06:53 -0000`
