@@ -38,6 +38,7 @@
 #include <interactive_markers/tools.h>
 #include <interactive_markers/menu_handler.h>
 #include <tf/transform_broadcaster.h>
+#include <tf/transform_listener.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <tf_conversions/tf_eigen.h>
 #include <jsk_topic_tools/rosparam_utils.h>
@@ -46,8 +47,8 @@ class Marker6DOF {
 public:
   Marker6DOF(): show_6dof_circle_(true) {
     ros::NodeHandle nh, pnh("~");
-    pnh.param("frame_id", frame_id_, std::string("/map"));
     pnh.param("publish_tf", publish_tf_, false);
+    pnh.param("publish_pose_periodically", publish_pose_periodically_, false);
     pnh.param("tf_frame", tf_frame_, std::string("object"));
     double tf_duration;
     pnh.param("tf_duration", tf_duration, 0.1);
@@ -59,6 +60,9 @@ public:
     pnh.param("object_g", object_g_, 1.0);
     pnh.param("object_b", object_b_, 1.0);
     pnh.param("object_a", object_a_, 1.0);
+    std::string frame_id;
+    pnh.param("frame_id", frame_id, std::string("/map"));
+    latest_pose_.header.frame_id = frame_id;
     double initial_x, initial_y, initial_z;
     pnh.param("initial_x", initial_x, 0.0);
     pnh.param("initial_y", initial_y, 0.0);
@@ -77,10 +81,15 @@ public:
       latest_pose_.pose.orientation.w = 1.0;
     }
     pnh.param("line_width", line_width_, 0.007);
+    pnh.param("mesh_file", mesh_file_, std::string(""));
+    if (pnh.hasParam("interactive_marker_scale")) {
+      pnh.param("interactive_marker_scale", int_marker_scale_, 1.0);
+    } else {
+      int_marker_scale_ = std::max(object_x_, std::max(object_y_, object_z_)) + 0.5;
+    }
     if (publish_tf_) {
       tf_broadcaster_.reset(new tf::TransformBroadcaster);
     }
-    latest_pose_.header.frame_id = frame_id_;
     
     pose_pub_ = pnh.advertise<geometry_msgs::PoseStamped>("pose", 1);
     pose_stamped_sub_ = pnh.subscribe("move_marker", 1, &Marker6DOF::moveMarkerCB, this);
@@ -102,7 +111,9 @@ public:
 protected:
   void moveMarkerCB(const geometry_msgs::PoseStamped::ConstPtr& msg) {
     boost::mutex::scoped_lock lock(mutex_);
-    pose_pub_.publish(msg);
+    if(!publish_pose_periodically_) {
+      pose_pub_.publish(msg);
+    }
     server_->setPose("marker", msg->pose, msg->header);
     latest_pose_ = geometry_msgs::PoseStamped(*msg);
     server_->applyChanges();
@@ -177,14 +188,28 @@ protected:
       object_marker.color.b = object_b_;
       object_marker.color.a = object_a_;
       object_marker.pose.orientation.w = 1.0;
-    }else if(object_type_ == std::string("line")){
+    }
+    else if(object_type_ == std::string("line")){
       object_marker.type = visualization_msgs::Marker::LINE_LIST;
       object_marker.scale.x = line_width_;
+      object_marker.color.r = object_r_;
       object_marker.color.g = object_g_;
       object_marker.color.b = object_b_;
       object_marker.color.a = object_a_;
       object_marker.pose.orientation.w = 1.0;
       calculateBoundingBox(object_marker);
+    }
+    else if(object_type_ == std::string("mesh")){
+      object_marker.type = visualization_msgs::Marker::MESH_RESOURCE;
+      object_marker.scale.x = object_x_;
+      object_marker.scale.y = object_y_;
+      object_marker.scale.z = object_z_;
+      object_marker.color.r = object_r_;
+      object_marker.color.g = object_g_;
+      object_marker.color.b = object_b_;
+      object_marker.color.a = object_a_;
+      object_marker.pose.orientation.w = 1.0;
+      object_marker.mesh_resource = mesh_file_;
     }
 
     
@@ -231,7 +256,7 @@ protected:
       int_marker.controls.push_back(control);
     }
   
-    int_marker.scale = std::max(object_x_, std::max(object_y_, object_z_)) + 0.5;
+    int_marker.scale = int_marker_scale_;
 
     server_->insert(int_marker,
                     boost::bind(&Marker6DOF::processFeedbackCB, this, _1));
@@ -245,7 +270,7 @@ protected:
     tf::poseMsgToTF(pose.pose, transform);
     tf_broadcaster_->sendTransform(tf::StampedTransform(
                                      transform, pose.header.stamp,
-                                     frame_id_,
+                                     pose.header.frame_id,
                                      tf_frame_));
   }
   
@@ -255,7 +280,9 @@ protected:
     pose.header = feedback->header;
     pose.pose = feedback->pose;
     latest_pose_ = pose;
-    pose_pub_.publish(pose);
+    if (!publish_pose_periodically_) {
+      pose_pub_.publish(pose);
+    }
   }
 
   void menuFeedbackCB(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback) {
@@ -277,6 +304,9 @@ protected:
     pose.header.stamp = e.current_real;
     server_->setPose("marker", pose.pose, pose.header);
     server_->applyChanges();
+    if (publish_pose_periodically_) {
+      pose_pub_.publish(pose);
+    }
   }
 
   void timerTFCallback(const ros::TimerEvent& e) {
@@ -290,7 +320,6 @@ protected:
   interactive_markers::MenuHandler menu_handler_;
   ros::Subscriber pose_stamped_sub_;
   ros::Publisher pose_pub_;
-  std::string frame_id_;
   std::string object_type_;
   double object_x_;
   double object_y_;
@@ -300,8 +329,11 @@ protected:
   double object_b_;
   double object_a_;
   double line_width_;
+  double int_marker_scale_;
+  std::string mesh_file_;
   bool show_6dof_circle_;
   bool publish_tf_;
+  bool publish_pose_periodically_;
   std::string tf_frame_;
   ros::Timer timer_pose_;
   ros::Timer timer_tf_;
