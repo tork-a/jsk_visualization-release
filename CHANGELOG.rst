@@ -2,6 +2,18 @@
 Changelog for package jsk_interactive_marker
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.1.2 (2017-07-07)
+------------------
+* [jsk_rviz_plugins][classification_result_visualizer] minor bugfix (`#669 <https://github.com/jsk-ros-pkg/jsk_visualization/issues/669>`_)
+* [jsk_interactive_marker] Install scripts in jsk_interactive_marker (`#670 <https://github.com/jsk-ros-pkg/jsk_visualization/issues/670>`_)
+* Contributors: Kei Okada, Kentaro Wada
+
+2.1.1 (2017-02-15)
+------------------
+* CMakeLists.txt: fix to support qt5
+* package.xml: remove pr2eus_moveit from dependency
+* Contributors: Yuki Furuta, Kei Okada
+
 2.1.0 (2017-02-13)
 ------------------
 * migration to kinetic, which uses qt5 wehre as indig/jade uses qt4 (`#662 <https://github.com/jsk-ros-pkg/jsk_visualization/issues/662>`_ )
