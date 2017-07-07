@@ -32,6 +32,7 @@ add_service_files(FILES
   )
 catkin_python_setup()
 generate_dynamic_reconfigure_options(
+  cfg/ClassificationResultVisualizer.cfg
   cfg/ContactStateMarker.cfg
   cfg/OverlayTextInterface.cfg)
 generate_messages(DEPENDENCIES std_msgs geometry_msgs)
@@ -61,11 +62,6 @@ else()
   find_package(Qt5Widgets REQUIRED)
 endif()
 add_definitions(-DQT_NO_KEYWORDS -g)
-
-
-#find_package(wxWidgets REQUIRED)
-#include(${wxWidgets_USE_FILE})
-#include_directories( ${wxWidgets_INCLUDE_DIRS} )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
