@@ -1,0 +1,12 @@
+Source: ros-indigo-jsk-rqt-plugins
+Section: misc
+Priority: extra
+Maintainer: Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-indigo-catkin, ros-indigo-image-view2, ros-indigo-message-generation, ros-indigo-mk, ros-indigo-rosbuild, ros-indigo-roslaunch, ros-indigo-rostest
+Homepage: http://jsk-docs.readthedocs.io/en/latest/jsk_visualization/doc/jsk_rqt_plugins
+Standards-Version: 3.9.2
+
+Package: ros-indigo-jsk-rqt-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-sklearn, python-urlgrabber, ros-indigo-cv-bridge, ros-indigo-image-pipeline (>= 1.12.23), ros-indigo-image-view2, ros-indigo-jsk-gui-msgs (>= 4.3.0), ros-indigo-message-runtime, ros-indigo-qt-gui-py-common, ros-indigo-resource-retriever, ros-indigo-rqt-gui, ros-indigo-rqt-gui-py, ros-indigo-rqt-image-view, ros-indigo-rqt-plot
+Description: The jsk_rqt_plugins package
