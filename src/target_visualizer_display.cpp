@@ -106,8 +106,12 @@ namespace jsk_rviz_plugins
                                                msg->pose,
                                                position, orientation))
     {
-      ROS_DEBUG( "Error transforming from frame '%s' to frame '%s'",
-                 msg->header.frame_id.c_str(), qPrintable( fixed_frame_ ));
+      std::ostringstream oss;
+      oss << "Error transforming pose";
+      oss << " from frame '" << msg->header.frame_id << "'";
+      oss << " to frame '" << qPrintable(fixed_frame_) << "'";
+      ROS_ERROR_STREAM(oss.str());
+      setStatus(rviz::StatusProperty::Error, "Transform", QString::fromStdString(oss.str()));
       return;
     }
     visualizer_->setPosition(position);
@@ -125,6 +129,7 @@ namespace jsk_rviz_plugins
 
   void TargetVisualizerDisplay::onInitialize()
   {
+    visualizer_initialized_ = false;
     MFDClass::onInitialize();
     scene_node_ = scene_manager_->getRootSceneNode()->createChildSceneNode();
     
@@ -182,7 +187,8 @@ namespace jsk_rviz_plugins
   
   void TargetVisualizerDisplay::updateShapeType()
   {
-    if (current_type_ != shape_type_property_->getOptionInt()) {
+    if (!visualizer_initialized_ ||
+        current_type_ != shape_type_property_->getOptionInt()) {
       {
         boost::mutex::scoped_lock lock(mutex_);
         if (shape_type_property_->getOptionInt() == SimpleCircle) {
@@ -203,8 +209,8 @@ namespace jsk_rviz_plugins
             radius_);
           v->setAnonymous(false);
           visualizer_.reset(v);
-          
         }
+        visualizer_initialized_ = true;
       }
       updateTargetName();
       updateColor();
