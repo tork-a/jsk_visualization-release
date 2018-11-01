@@ -4,6 +4,7 @@
 # http://ros.org/doc/groovy/api/catkin/html/user_guide/supposed.html
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_rviz_plugins)
+add_compile_options(-std=c++11)
 # Load catkin and all dependencies required for this package
 # TODO: remove all from COMPONENTS that are not catkin packages.
 find_package(catkin REQUIRED COMPONENTS rviz jsk_hark_msgs jsk_footstep_msgs jsk_recognition_utils
@@ -14,7 +15,8 @@ find_package(catkin REQUIRED COMPONENTS rviz jsk_hark_msgs jsk_footstep_msgs jsk
   view_controller_msgs
   geometry_msgs
   dynamic_reconfigure
-  jsk_recognition_msgs)
+  jsk_recognition_msgs
+  jsk_gui_msgs)
 
 # Use ccache if installed to make it fast to generate object files
 find_program(CCACHE_FOUND ccache)
@@ -42,7 +44,7 @@ catkin_package(
     CATKIN_DEPENDS jsk_hark_msgs jsk_footstep_msgs
     jsk_recognition_utils cv_bridge people_msgs image_geometry
     INCLUDE_DIRS # TODO include
-    LIBRARIES # TODO
+    LIBRARIES ${PROJECT_NAME}
 )
 
 
@@ -107,6 +109,7 @@ set(HEADER_FILES
   src/pose_array_display.h
   src/tf_trajectory_display.h
   src/yes_no_button_interface.h
+  src/segment_array_display.h
 )
 
 if(rviz_QT_VERSION VERSION_LESS "5")
@@ -160,6 +163,7 @@ set(SOURCE_FILES
   src/pose_array_display.cpp
   src/tf_trajectory_display.cpp
   src/yes_no_button_interface.cpp
+  src/segment_array_display.cpp
   ${MOC_FILES}
 )
 
@@ -169,22 +173,48 @@ if(rviz_QT_VERSION VERSION_LESS "5")
 else()
   target_link_libraries(jsk_rviz_plugins Qt5::Widgets ${catkin_LIBRARIES} ${rviz_DEFAULT_PLUGIN_LIBRARIES})
 endif()
-add_dependencies(jsk_rviz_plugins jsk_hark_msgs_gencpp ${PROJECT_NAME}_gencpp)
+add_dependencies(jsk_rviz_plugins
+  jsk_footstep_msgs_generate_messages_cpp
+  jsk_gui_msgs_generate_messages_cpp
+  jsk_hark_msgs_generate_messages_cpp
+  jsk_recognition_msgs_generate_messages_cpp
+  people_msgs_generate_messages_cpp
+  view_controller_msgs_generate_messages_cpp
+  ${PROJECT_NAME}_generate_messages_cpp)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   set_target_properties(jsk_rviz_plugins PROPERTIES LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -z defs")
 endif()
 
+# From https://github.com/jsk-ros-pkg/jsk_recognition/pull/2345
+# Install header files directly into ${CATKIN_PACKAGE_INCLUDE_DESTINATION}.
+# If the package has setup.py and modules under src/${PROJECT_NAME}/,
+# install python executables directly into ${CATKIN_PACKAGE_BIN_DESTINATION}.
+# However, if it doesn't have setup.py, directories including python executables
+# should be installed recursively into ${CATKIN_PACKAGE_SHARE_DESTINATION}.
+# Also, other directories like 'launch' or 'sample' must be installed
+# recursively into ${CATKIN_PACKAGE_SHARE_DESTINATION}.
+# Be careful that 'launch' and 'launch/' are different: the former is directory
+# and the latter is each content.
+install(TARGETS jsk_rviz_plugins
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
+
+install(DIRECTORY scripts/
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  USE_SOURCE_PERMISSIONS
+)
+
 install(FILES plugin_description.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
-install(TARGETS jsk_rviz_plugins
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
-
-install(DIRECTORY cfg icons launch samples scripts
+install(DIRECTORY cfg config icons launch samples test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  USE_SOURCE_PERMISSIONS)
-install(DIRECTORY ./src/
+  USE_SOURCE_PERMISSIONS
+)
+
+install(DIRECTORY src/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING PATTERN "*.h")
+  FILES_MATCHING PATTERN "*.h"
+)

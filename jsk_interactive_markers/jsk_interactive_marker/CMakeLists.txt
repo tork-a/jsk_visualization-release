@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_interactive_marker)
 
+add_compile_options(-std=c++11)
 
 # Use ccache if installed to make it fast to generate object files
 find_program(CCACHE_FOUND ccache)
@@ -29,6 +30,8 @@ find_package(catkin REQUIRED COMPONENTS
   jsk_topic_tools
   rviz
   roseus)
+message("jsk_recognition_msgs : ${jsk_recognition_msgs_VERSION}")
+message("jsk_footstep_msgs    : ${jsk_footstep_msgs_VERSION}")
 find_package(orocos_kdl REQUIRED)
 find_package(TinyXML REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system)
@@ -64,6 +67,12 @@ else()
 endif()
 add_definitions(-DQT_NO_KEYWORDS -g)
 
+if(jsk_recognition_msgs_VERSION VERSION_LESS "1.2.0")
+  set(TRANSFORMABLE_MARKER_OPERATOR_SRC_FILES)
+  message(WARNING "transformable_marker_operator.h requires jsk_recognition_msgs >= 1.2.0")
+else(jsk_recognition_msgs_VERSION VERSION_LESS "1.2.0")
+  set(TRANSFORMABLE_MARKER_OPERATOR_SRC_FILES
+     src/rviz_plugins/transformable_marker_operator.cpp)
 if(rviz_QT_VERSION VERSION_LESS "5")
   qt4_wrap_cpp(MOC_FILES
     include/jsk_interactive_marker/rviz_plugins/transformable_marker_operator.h
@@ -73,6 +82,7 @@ else()
     include/jsk_interactive_marker/rviz_plugins/transformable_marker_operator.h
     )
 endif()
+endif(jsk_recognition_msgs_VERSION VERSION_LESS "1.2.0")
 
 # target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${TinyXML_LIBRARIES} ${orocos_kdl_LIBRARIES})
 link_directories(${catkin_LIBRARY_DIRS})
@@ -81,7 +91,7 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 add_library(jsk_interactive_marker
   src/interactive_marker_helpers.cpp
-  src/rviz_plugins/transformable_marker_operator.cpp
+  ${TRANSFORMABLE_MARKER_OPERATOR_SRC_FILES}
   ${MOC_FILES}
   ${UIC_FILES}
 )
@@ -178,25 +188,34 @@ if(${yaml_cpp_VERSION} VERSION_LESS "0.5.0")
   add_definitions("-DUSE_OLD_YAML")
 endif()
 
-
+# From https://github.com/jsk-ros-pkg/jsk_recognition/pull/2345
+# Install header files directly into ${CATKIN_PACKAGE_INCLUDE_DESTINATION}.
+# If the package has setup.py and modules under src/${PROJECT_NAME}/,
+# install python executables directly into ${CATKIN_PACKAGE_BIN_DESTINATION}.
+# However, if it doesn't have setup.py, directories including python executables
+# should be installed recursively into ${CATKIN_PACKAGE_SHARE_DESTINATION}.
+# Also, other directories like 'launch' or 'sample' must be installed
+# recursively into ${CATKIN_PACKAGE_SHARE_DESTINATION}.
+# Be careful that 'launch' and 'launch/' are different: the former is directory
+# and the latter is each content.
 install(FILES plugin_description.xml
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
 
 install(TARGETS jsk_interactive_marker
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
-
-install(DIRECTORY scripts/
-        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-        USE_SOURCE_PERMISSIONS
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
 
-install(DIRECTORY launch euslisp urdf
+install(DIRECTORY config euslisp launch models scripts urdf
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  PATTERN ".svn" EXCLUDE)
+  USE_SOURCE_PERMISSIONS
+  PATTERN ".svn" EXCLUDE
+)
 
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+)
 
 install(TARGETS
   jsk_interactive_marker
@@ -217,8 +236,8 @@ install(TARGETS
   transformable_server_sample
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
-
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
 
 # copy *.rviz.default to *.rviz
 macro(copy_rviz_files _rviz_files)
