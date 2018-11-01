@@ -33,76 +33,59 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#ifndef JSK_RVIZ_PLUGINS_TORUS_ARRAY_DISPLAY_H_
-#define JSK_RVIZ_PLUGINS_TORUS_ARRAY_DISPLAY_H_
+#ifndef JSK_RVIZ_PLUGINS_SEGMENT_ARRAY_DISPLAY_H_
+#define JSK_RVIZ_PLUGINS_SEGMENT_ARRAY_DISPLAY_H_
 
 #ifndef Q_MOC_RUN
-#include <jsk_recognition_msgs/TorusArray.h>
+#include <jsk_recognition_msgs/SegmentArray.h>
 #include <rviz/properties/color_property.h>
 #include <rviz/properties/bool_property.h>
 #include <rviz/properties/float_property.h>
-#include <rviz/properties/int_property.h>
+#include <rviz/properties/enum_property.h>
 #include <rviz/message_filter_display.h>
 #include <rviz/ogre_helpers/shape.h>
-#include <rviz/ogre_helpers/mesh_shape.h>
+#include <rviz/ogre_helpers/billboard_line.h>
 #include <rviz/ogre_helpers/arrow.h>
 #include <OGRE/OgreSceneNode.h>
 #endif
 
 namespace jsk_rviz_plugins
 {
-  struct Triangle
-  {
-    unsigned v1, v2, v3; // index for the 3 vertices that make up a triangle
-  };
-
-  class TorusArrayDisplay: public rviz::MessageFilterDisplay<jsk_recognition_msgs::TorusArray>
+  class SegmentArrayDisplay:
+    public rviz::MessageFilterDisplay<jsk_recognition_msgs::SegmentArray>
   {
     Q_OBJECT
   public:
-    typedef std::shared_ptr<rviz::Arrow> ArrowPtr;
-    typedef std::shared_ptr<rviz::MeshShape> ShapePtr;
-    TorusArrayDisplay();
-    virtual ~TorusArrayDisplay();
+    typedef std::shared_ptr<rviz::BillboardLine> BillboardLinePtr;
+    SegmentArrayDisplay();
+    virtual ~SegmentArrayDisplay();
   protected:
     virtual void onInitialize();
     virtual void reset();
-    void allocateShapes(const jsk_recognition_msgs::TorusArray::ConstPtr& msg);
-    void allocateShapes(const size_t num);
+    void allocateBillboardLines(int num);
     QColor getColor(size_t index);
+    virtual void showEdges(
+      const jsk_recognition_msgs::SegmentArray::ConstPtr& msg);
+
+    rviz::EnumProperty* coloring_property_;
     rviz::ColorProperty* color_property_;
     rviz::FloatProperty* alpha_property_;
-    rviz::IntProperty* uv_property_;
-    rviz::BoolProperty* auto_color_property_;
-    rviz::BoolProperty* show_normal_property_;
-    rviz::FloatProperty* normal_length_property_;
+    rviz::FloatProperty* line_width_property_;
     QColor color_;
     double alpha_;
-    bool auto_color_;
-    bool show_normal_;
-    double normal_length_;
-    int uv_dimension_;
-    std::vector<Ogre::SceneNode*> arrow_nodes_;
-    std::vector<ArrowPtr> arrow_objects_;
-    std::vector<ShapePtr> shapes_;
+    std::string coloring_method_;
+    double line_width_;
+    std::vector<BillboardLinePtr> edges_;
+
+    jsk_recognition_msgs::SegmentArray::ConstPtr latest_msg_;
   private Q_SLOTS:
     void updateColor();
     void updateAlpha();
-    void updateUVdimension();
-    void updateAutoColor();
-    void updateShowNormal();
-    void updateNormalLength();
-
-    void calcurateTriangleMesh(
-                               int large_dimension, int small_dimension,
-                               float large_radius, float small_radius,
-                               Ogre::Vector3 pos, Ogre::Quaternion q,
-                               std::vector<Triangle> &triangles,
-                               std::vector<Ogre::Vector3> &vertices,
-                               std::vector<Ogre::Vector3> &normals
-                               );
+    void updateColoring();
+    void updateLineWidth();
   private:
-    void processMessage(const jsk_recognition_msgs::TorusArray::ConstPtr& msg);
+    void processMessage(
+      const jsk_recognition_msgs::SegmentArray::ConstPtr& msg);
   };
 
 }
