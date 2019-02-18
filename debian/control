@@ -1,0 +1,12 @@
+Source: ros-kinetic-jsk-rqt-plugins
+Section: misc
+Priority: extra
+Maintainer: Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-kinetic-catkin, ros-kinetic-image-view2, ros-kinetic-message-generation, ros-kinetic-mk, ros-kinetic-rosbuild, ros-kinetic-roslaunch, ros-kinetic-rostest
+Homepage: http://jsk-docs.readthedocs.io/en/latest/jsk_visualization/doc/jsk_rqt_plugins
+Standards-Version: 3.9.2
+
+Package: ros-kinetic-jsk-rqt-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-sklearn, python-urlgrabber, ros-kinetic-cv-bridge, ros-kinetic-image-pipeline (>= 1.12.23), ros-kinetic-image-view2, ros-kinetic-jsk-gui-msgs (>= 4.3.0), ros-kinetic-message-runtime, ros-kinetic-qt-gui-py-common, ros-kinetic-resource-retriever, ros-kinetic-rqt-gui, ros-kinetic-rqt-gui-py, ros-kinetic-rqt-image-view, ros-kinetic-rqt-plot
+Description: The jsk_rqt_plugins package
