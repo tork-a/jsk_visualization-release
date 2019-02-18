@@ -1,0 +1,325 @@
+ros-kinetic-jsk-interactive (2.1.5-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Mon, 18 Feb 2019 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (2.1.4-0xenial) xenial; urgency=high
+
+  * Fix install destination (#717 <https://github.com/jsk-ros-pkg/jsk_visualization/issues/717>)
+    * Update comment about installation
+    * Add comment for install destination
+  * Contributors: Yuto Uchimi
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 01 Nov 2018 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (2.1.3-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 26 Oct 2017 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (2.1.2-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Fri, 07 Jul 2017 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (2.1.1-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Wed, 15 Feb 2017 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (2.1.0-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Mon, 13 Feb 2017 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (2.0.1-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 15 Dec 2016 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (2.0.0-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Wed, 14 Dec 2016 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.34-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 29 Sep 2016 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.33-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Tue, 13 Sep 2016 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.32-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Wed, 20 Jul 2016 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.31-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 19 May 2016 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.30-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Fri, 25 Mar 2016 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.29-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Sun, 20 Mar 2016 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.28-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Wed, 03 Feb 2016 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.27-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Tue, 08 Dec 2015 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.26-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 03 Dec 2015 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.25-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Sat, 10 Oct 2015 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.24-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Tue, 08 Sep 2015 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.23-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Wed, 15 Jul 2015 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.22-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Wed, 24 Jun 2015 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.21-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 11 Jun 2015 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.20-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Mon, 04 May 2015 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.19-0xenial) xenial; urgency=high
+
+  * Remove rosbuild files
+  * Contributors: Ryohei Ueda
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 09 Apr 2015 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.18-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Fri, 30 Jan 2015 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.17-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 29 Jan 2015 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.16-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Sun, 04 Jan 2015 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.15-0xenial) xenial; urgency=high
+
+  * use robot-joint-interface in move bounding box
+  * add grasp hand method
+  * use moveit
+  * Contributors: Ryohei Ueda, Yusuke Furuta
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Sat, 13 Dec 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.14-0xenial) xenial; urgency=high
+
+  * reduce load
+  * add baxter to ik contollers
+  * Merge pull request #192 <https://github.com/jsk-ros-pkg/jsk_visualization/issues/192> from hyaguchijsk/feature/add_hrp2w_interactive_marker_control
+    adding hrp2w interactive markers
+  * modified teleop source for hrp2jsknts
+  * adding hrp2w interactive markers
+  * do not use *robot-offset*
+  * Contributors: Yuki Furuta, Hiroaki Yaguchi, Kei Okada, Masaki Murooka, Yuto Inagaki
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Tue, 09 Dec 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.13-0xenial) xenial; urgency=high
+
+  * interactive marker control for hrp2
+  * publish move time
+  * Contributors: Yusuke Furuta
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Fri, 10 Oct 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.12-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Tue, 23 Sep 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.11-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Mon, 22 Sep 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.10-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Sat, 13 Sep 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.9-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Sun, 07 Sep 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.8-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 04 Sep 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.7-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Wed, 06 Aug 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.6-0xenial) xenial; urgency=high
+
+  * add grasp method
+  * Contributors: Yusuke Furuta
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Mon, 14 Jul 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.5-0xenial) xenial; urgency=high
+
+  * add load-ros-manifest jsk_interactive_marker
+  * Contributors: Yusuke Furuta
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Sun, 29 Jun 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.4-0xenial) xenial; urgency=high
+
+  * jsk_interactive: catkinize
+  * Contributors: Kei Okada
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Sat, 31 May 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.3-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 22 May 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.2-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Wed, 21 May 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.1-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Tue, 20 May 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (1.0.0-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Sat, 17 May 2014 00:00:00 -0000
+
+ros-kinetic-jsk-interactive (0.0.3-0xenial) xenial; urgency=high
+
+
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 15 May 2014 14:00:00 -0000
+
+ros-kinetic-jsk-interactive (0.0.2-0xenial) xenial; urgency=high
+
+  * add controller to move base
+  * add service to get joint state
+  * add callback to move gripper
+  * fix torso angle bag when receive joint state
+  * add robot spin once in loop
+  * modify joint-interaface in order to use other robot
+  * add interaface to move real robot run in robot
+  * not use (model2real) in initialization
+  * move to special pose (fg reset-manip-pose)
+  * don't reset robot pose when initialization
+  * don't use x::window-main-one when display doesn't exist
+  * wait until tf is published
+  * enable to select whether make irtviewer or not in interactive marker files
+  * do not make viewr in atals-im-main.l
+  * do not make viewer in atals-joint.l
+  * change frame-id from odom to map
+  * modify caliculation of tf from odom to marker
+  * add plan and execute mode
+  * we can select Arm Ik , Torso Ik or Fullbody Ik
+  * add .rviz for atlas_joint_marker
+  * Use package:// instead of file:// to designate mesh file name
+  * refactor atlas-joint.l in jsk_interactive
+  * merge joint-controll to robot-im.l
+  * change the folder of lisp code
+  * mv file for control joint
+  * mv euslisp file from scripts to euslisp
+  * add robot joint marker control
+  * ik including base for pr2
+  * pr2 moves when interactive model moves
+  * add finger interactive marker
+  * use torso when solving IK
+  * Can change headmode (Automatic or by Hand)
+  * use defined value by msg
+  * add head-marker callback
+  * add jsk_interactive_markers/ by yusuke furuta
+  * Contributors: Yusuke Furuta, Kei Okada, Masaki Murooka
+
+ -- Yusuke Furuta <furua@jsk.imi.i.u-tokyo.ac.jp>  Thu, 15 May 2014 11:06:00 -0000
+
+
