@@ -1,0 +1,12 @@
+Source: ros-melodic-jsk-interactive-marker
+Section: misc
+Priority: extra
+Maintainer: furuta <furuta@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), libtinyxml-dev, libyaml-cpp-dev, ros-melodic-actionlib, ros-melodic-catkin, ros-melodic-cmake-modules, ros-melodic-dynamic-reconfigure, ros-melodic-dynamic-tf-publisher, ros-melodic-eigen-conversions, ros-melodic-geometry-msgs, ros-melodic-interactive-markers, ros-melodic-jsk-footstep-msgs, ros-melodic-jsk-recognition-msgs (>= 1.2.0), ros-melodic-jsk-recognition-utils, ros-melodic-jsk-rviz-plugins, ros-melodic-jsk-topic-tools, ros-melodic-message-filters, ros-melodic-message-generation, ros-melodic-mk, ros-melodic-moveit-msgs, ros-melodic-rosbuild, ros-melodic-roscpp, ros-melodic-roseus, ros-melodic-roslib, ros-melodic-rviz, ros-melodic-sensor-msgs, ros-melodic-tf, ros-melodic-tf-conversions, ros-melodic-urdf, ros-melodic-visualization-msgs
+Homepage: http://ros.org/wiki/interactive_marker
+Standards-Version: 3.9.2
+
+Package: ros-melodic-jsk-interactive-marker
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libtinyxml-dev, libyaml-cpp-dev, ros-melodic-actionlib, ros-melodic-dynamic-reconfigure, ros-melodic-dynamic-tf-publisher, ros-melodic-eigen-conversions, ros-melodic-geometry-msgs, ros-melodic-interactive-markers, ros-melodic-jsk-footstep-msgs, ros-melodic-jsk-recognition-msgs (>= 1.0.0), ros-melodic-jsk-recognition-utils, ros-melodic-jsk-rviz-plugins, ros-melodic-jsk-topic-tools, ros-melodic-message-filters, ros-melodic-message-runtime, ros-melodic-moveit-msgs, ros-melodic-roscpp, ros-melodic-roseus, ros-melodic-roslib, ros-melodic-rviz, ros-melodic-sensor-msgs, ros-melodic-tf, ros-melodic-tf-conversions, ros-melodic-urdf, ros-melodic-visualization-msgs
+Description: jsk interactive markers
