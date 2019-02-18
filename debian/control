@@ -1,0 +1,12 @@
+Source: ros-melodic-jsk-rqt-plugins
+Section: misc
+Priority: extra
+Maintainer: Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-melodic-catkin, ros-melodic-image-view2, ros-melodic-message-generation, ros-melodic-mk, ros-melodic-rosbuild, ros-melodic-roslaunch, ros-melodic-rostest
+Homepage: http://jsk-docs.readthedocs.io/en/latest/jsk_visualization/doc/jsk_rqt_plugins
+Standards-Version: 3.9.2
+
+Package: ros-melodic-jsk-rqt-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-sklearn, python-urlgrabber, ros-melodic-cv-bridge, ros-melodic-image-pipeline (>= 1.12.23), ros-melodic-image-view2, ros-melodic-jsk-gui-msgs (>= 4.3.0), ros-melodic-message-runtime, ros-melodic-qt-gui-py-common, ros-melodic-resource-retriever, ros-melodic-rqt-gui, ros-melodic-rqt-gui-py, ros-melodic-rqt-image-view, ros-melodic-rqt-plot
+Description: The jsk_rqt_plugins package
