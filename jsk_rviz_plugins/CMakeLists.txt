@@ -4,7 +4,9 @@
 # http://ros.org/doc/groovy/api/catkin/html/user_guide/supposed.html
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_rviz_plugins)
-add_compile_options(-std=c++11)
+if("$ENV{ROS_DISTRO}" STRGREATER "indigo")
+  add_compile_options(-std=c++11)
+endif()
 # Load catkin and all dependencies required for this package
 # TODO: remove all from COMPONENTS that are not catkin packages.
 find_package(catkin REQUIRED COMPONENTS rviz jsk_hark_msgs jsk_footstep_msgs jsk_recognition_utils
@@ -110,6 +112,7 @@ set(HEADER_FILES
   src/tf_trajectory_display.h
   src/yes_no_button_interface.h
   src/segment_array_display.h
+  src/image_transport_hints_property.h
 )
 
 if(rviz_QT_VERSION VERSION_LESS "5")
@@ -164,6 +167,7 @@ set(SOURCE_FILES
   src/tf_trajectory_display.cpp
   src/yes_no_button_interface.cpp
   src/segment_array_display.cpp
+  src/image_transport_hints_property.cpp
   ${MOC_FILES}
 )
 
