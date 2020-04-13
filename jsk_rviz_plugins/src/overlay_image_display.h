@@ -47,11 +47,13 @@
 #include <rviz/properties/int_property.h>
 #include <rviz/properties/float_property.h>
 #include <rviz/properties/bool_property.h>
+#include <rviz/properties/editable_enum_property.h>
 
 #include <image_transport/image_transport.h>
 #include <sensor_msgs/Image.h>
 
 #include "overlay_utils.h"
+#include "image_transport_hints_property.h"
 #endif
 
 namespace jsk_rviz_plugins
@@ -69,25 +71,32 @@ namespace jsk_rviz_plugins
     virtual void setPosition(int x, int y);
     virtual int getX() { return left_; };
     virtual int getY() { return top_; };
-    
+
   protected:
     boost::mutex mutex_;
     OverlayObject::Ptr overlay_;
     rviz::RosTopicProperty* update_topic_property_;
+    ImageTransportHintsProperty* transport_hint_property_;
     rviz::BoolProperty* keep_aspect_ratio_property_;
     rviz::IntProperty* width_property_;
     rviz::IntProperty* height_property_;
     rviz::IntProperty* left_property_;
     rviz::IntProperty* top_property_;
     rviz::FloatProperty* alpha_property_;
+    rviz::BoolProperty* overwrite_alpha_property_;
     int width_, height_, left_, top_;
     double alpha_;
+#if ROS_VERSION_MINIMUM(1,12,0)
     std::shared_ptr<image_transport::ImageTransport> it_;
+#else
+    boost::shared_ptr<image_transport::ImageTransport> it_;
+#endif
     image_transport::Subscriber sub_;
     sensor_msgs::Image::ConstPtr msg_;
     bool is_msg_available_;
     bool require_update_;
     bool keep_aspect_ratio_;
+    bool overwrite_alpha_;
 
     virtual void redraw();
     virtual void onInitialize();
@@ -106,9 +115,9 @@ namespace jsk_rviz_plugins
     void updateTop();
     void updateAlpha();
     void updateKeepAspectRatio();
+    void updateOverwriteAlpha();
   };
 
 }
 
 #endif
-
