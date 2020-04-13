@@ -1,3 +1,32 @@
+## jsk_visualization (kinetic) - 2.1.6-1
+
+The packages in the `jsk_visualization` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release jsk_visualization -y --rosdistro kinetic --track kinetic` on `Mon, 13 Apr 2020 01:10:37 -0000`
+
+These packages were released:
+- `jsk_interactive`
+- `jsk_interactive_marker`
+- `jsk_interactive_test`
+- `jsk_rqt_plugins`
+- `jsk_rviz_plugins`
+- `jsk_visualization`
+
+Version of package(s) in repository `jsk_visualization`:
+
+- upstream repository: https://github.com/jsk-ros-pkg/jsk_visualization
+- release repository: https://github.com/tork-a/jsk_visualization-release.git
+- rosdistro version: `2.1.5-0`
+- old version: `2.1.5-0`
+- new version: `2.1.6-1`
+
+Versions of tools used:
+
+- bloom version: `0.9.3`
+- catkin_pkg version: `0.4.16`
+- rosdep version: `0.19.0`
+- rosdistro version: `0.8.0`
+- vcstools version: `0.1.42`
+
+
 ## jsk_visualization (melodic) - 2.1.6-1
 
 The packages in the `jsk_visualization` repository were released into the `melodic` distro by running `/usr/bin/bloom-release jsk_visualization --rosdistro melodic --track melodic` on `Mon, 13 Apr 2020 00:58:27 -0000`
