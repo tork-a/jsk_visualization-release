@@ -50,10 +50,14 @@
 #include <image_geometry/pinhole_camera_model.h>
 #include <sensor_msgs/Image.h>
 #include <OGRE/OgreManualObject.h>
+#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreTexture.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
+#include <image_transport/subscriber.h>
+
+#include "image_transport_hints_property.h"
 #endif
 
 namespace jsk_rviz_plugins
@@ -61,7 +65,11 @@ namespace jsk_rviz_plugins
   class TrianglePolygon
   {
   public:
+#if ROS_VERSION_MINIMUM(1,12,0)
     typedef std::shared_ptr<TrianglePolygon> Ptr;
+#else
+    typedef boost::shared_ptr<TrianglePolygon> Ptr;
+#endif
     TrianglePolygon(Ogre::SceneManager* manager,
                     Ogre::SceneNode* node,
                     const cv::Point3d& O,
@@ -84,8 +92,13 @@ namespace jsk_rviz_plugins
   {
     Q_OBJECT
   public:
+#if ROS_VERSION_MINIMUM(1,12,0)
     typedef std::shared_ptr<rviz::Shape> ShapePtr;
     typedef std::shared_ptr<rviz::BillboardLine> BillboardLinePtr;
+#else
+    typedef boost::shared_ptr<rviz::Shape> ShapePtr;
+    typedef boost::shared_ptr<rviz::BillboardLine> BillboardLinePtr;
+#endif
     CameraInfoDisplay();
     virtual ~CameraInfoDisplay();
     
@@ -124,7 +137,7 @@ namespace jsk_rviz_plugins
     Ogre::TexturePtr texture_;
     Ogre::MaterialPtr material_bottom_;
     Ogre::TexturePtr bottom_texture_;
-    ros::Subscriber image_sub_;
+    image_transport::Subscriber image_sub_;
     boost::mutex mutex_;
     ////////////////////////////////////////////////////////
     // variables updated by rviz properties
@@ -142,6 +155,7 @@ namespace jsk_rviz_plugins
     ////////////////////////////////////////////////////////
     // properties
     ////////////////////////////////////////////////////////
+    ImageTransportHintsProperty* image_transport_hints_property_;
     rviz::FloatProperty* far_clip_distance_property_;
     rviz::FloatProperty* alpha_property_;
     rviz::ColorProperty* color_property_;
