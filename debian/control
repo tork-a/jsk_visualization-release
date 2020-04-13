@@ -1,0 +1,12 @@
+Source: ros-melodic-jsk-visualization
+Section: misc
+Priority: optional
+Maintainer: Ryohei Ueda <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-melodic-catkin
+Homepage: http://ros.org/wiki/jsk_visualization
+Standards-Version: 3.9.2
+
+Package: ros-melodic-jsk-visualization
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-melodic-jsk-interactive, ros-melodic-jsk-interactive-marker, ros-melodic-jsk-interactive-test, ros-melodic-jsk-rqt-plugins, ros-melodic-jsk-rviz-plugins
+Description: Metapackage that contains visualization package for jsk-ros-pkg
