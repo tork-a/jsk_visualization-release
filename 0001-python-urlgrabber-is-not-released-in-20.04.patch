@@ -1,0 +1,27 @@
+From 341942350a1a0359f98dae2fafc742cb2b8bb348 Mon Sep 17 00:00:00 2001
+From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Date: Tue, 27 Oct 2020 11:14:34 +0900
+Subject: [PATCH] python-urlgrabber is not released in 20.04
+
+---
+ package.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/package.xml b/package.xml
+index c412dacf..ad6e9f3a 100644
+--- a/package.xml
++++ b/package.xml
+@@ -30,8 +30,8 @@
+   <exec_depend>image_view2</exec_depend>
+   <exec_depend version_gte="4.3.0" >jsk_gui_msgs</exec_depend>
+   <exec_depend>cv_bridge</exec_depend>
+-  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-urlgrabber</exec_depend>
+-  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-urlgrabber</exec_depend>
++  <!-- <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-urlgrabber</exec_depend> -->
++  <!-- <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-urlgrabber</exec_depend> -->
+   <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-sklearn</exec_depend>
+   <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-sklearn</exec_depend>
+   <exec_depend>message_runtime</exec_depend>
+-- 
+2.17.1
+
