@@ -158,7 +158,7 @@ tracks:
     release_inc: '2'
     release_repo_url: null
     release_tag: :{version}
-    ros_distro: melodic
+    ros_distro: noetic
     vcs_type: git
     vcs_uri: https://github.com/jsk-ros-pkg/jsk_visualization
     version: :{auto}
