@@ -1,0 +1,12 @@
+Source: ros-kinetic-jsk-interactive-test
+Section: misc
+Priority: optional
+Maintainer: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-kinetic-catkin, ros-kinetic-jsk-interactive, ros-kinetic-jsk-interactive-marker, ros-kinetic-mk, ros-kinetic-rosbuild, ros-kinetic-rospy, ros-kinetic-visualization-msgs
+Homepage: http://ros.org/wiki/jsk_interactive_test
+Standards-Version: 3.9.2
+
+Package: ros-kinetic-jsk-interactive-test
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-kinetic-jsk-interactive, ros-kinetic-jsk-interactive-marker, ros-kinetic-rospy, ros-kinetic-rviz, ros-kinetic-visualization-msgs
+Description: jsk_interactive_test
