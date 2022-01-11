@@ -1,4 +1,4 @@
-From 8381c28f829f8e20d844ca0a467ec117596e6932 Mon Sep 17 00:00:00 2001
+From c69d7e7345a7383311fe8d16aa044a2afaf76e9a Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Tue, 27 Oct 2020 11:15:27 +0900
 Subject: [PATCH 1/2] roseus is not released under 20.04

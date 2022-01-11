@@ -1,4 +1,4 @@
-From f69acd7c7d360c0c8bd68694fdfff5e50774c974 Mon Sep 17 00:00:00 2001
+From d665c080c11adc909f97f3f069b706a2ee38143e Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Tue, 27 Oct 2020 11:19:06 +0900
 Subject: [PATCH 2/2] roseus (run_depend) is not released under 20.04
