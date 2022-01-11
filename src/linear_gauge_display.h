@@ -32,8 +32,9 @@
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
-#ifndef JSK_RVIZ_PLUGINS_PIE_CHART_DISPLAY_H_
-#define JSK_RVIZ_PLUGINS_PIE_CHART_DISPLAY_H_
+#ifndef JSK_RVIZ_PLUGIN_LINEAR_GAUGE_H_
+#define JSK_RVIZ_PLUGIN_LINEAR_GAUGE_H_
+
 #include "std_msgs/Float32.h"
 #ifndef Q_MOC_RUN
 #include <rviz/display.h>
@@ -50,104 +51,118 @@
 
 namespace jsk_rviz_plugins
 {
-  class PieChartDisplay
+
+  class LinearGaugeDisplay
     : public rviz::Display
   {
     Q_OBJECT
   public:
-    PieChartDisplay();
-    virtual ~PieChartDisplay();
-    
+    LinearGaugeDisplay();
+    virtual ~LinearGaugeDisplay();
     // methods for OverlayPickerTool
     virtual bool isInRegion(int x, int y);
     virtual void movePosition(int x, int y);
     virtual void setPosition(int x, int y);
     virtual int getX() { return left_; };
     virtual int getY() { return top_; };
-
   protected:
+    ////////////////////////////////////////////////////////
+    // methods
+    ////////////////////////////////////////////////////////
+    virtual void update(float wall_dt, float ros_dt);
     virtual void subscribe();
     virtual void unsubscribe();
     virtual void onEnable();
     virtual void onDisable();
     virtual void onInitialize();
     virtual void processMessage(const std_msgs::Float32::ConstPtr& msg);
-    virtual void drawPlot(double val);
-    virtual void update(float wall_dt, float ros_dt);
+    virtual void drawPlot();
+    ////////////////////////////////////////////////////////
     // properties
+    ////////////////////////////////////////////////////////
     rviz::RosTopicProperty* update_topic_property_;
-    rviz::IntProperty* size_property_;
-    rviz::IntProperty* left_property_;
-    rviz::IntProperty* top_property_;
+    rviz::BoolProperty* show_value_property_;
+    rviz::BoolProperty* vertical_gauge_property_;
     rviz::ColorProperty* fg_color_property_;
     rviz::ColorProperty* bg_color_property_;
-    rviz::ColorProperty* text_color_property_;
     rviz::FloatProperty* fg_alpha_property_;
-    rviz::FloatProperty* fg_alpha2_property_;
     rviz::FloatProperty* bg_alpha_property_;
-    rviz::FloatProperty* text_alpha_property_;
+    rviz::FloatProperty* update_interval_property_;
+    rviz::BoolProperty* show_border_property_;
+    rviz::IntProperty* buffer_length_property_;
+    rviz::IntProperty* width_property_;
+    rviz::IntProperty* height_property_;
+    rviz::IntProperty* left_property_;
+    rviz::IntProperty* top_property_;
+    rviz::IntProperty* line_width_property_;
+    rviz::BoolProperty* auto_color_change_property_;
+    rviz::ColorProperty* max_color_property_;
+    rviz::BoolProperty* show_caption_property_;
     rviz::IntProperty* text_size_property_;
     rviz::FloatProperty* max_value_property_;
     rviz::FloatProperty* min_value_property_;
-    rviz::BoolProperty* show_caption_property_;
-    rviz::BoolProperty* auto_color_change_property_;
-    rviz::ColorProperty* max_color_property_;
-    rviz::ColorProperty* med_color_property_;
-    rviz::FloatProperty* max_color_threshold_property_;
-    rviz::FloatProperty* med_color_threshold_property_;
-    rviz::BoolProperty* clockwise_rotate_property_;
-
-    ros::Subscriber sub_;
+    
+    OverlayObject::Ptr overlay_;
+    QColor fg_color_;
+    QColor max_color_;
+    QColor bg_color_;
+   
+    double fg_alpha_;
+    double bg_alpha_;
+    bool show_border_;
+    bool auto_color_change_;
+    bool show_value_;
+    bool show_caption_;
+    bool vertical_gauge_;
+    bool draw_required_;
+    float last_time_;
+    float update_interval_;
+    
+    uint16_t texture_width_;
+    uint16_t texture_height_;
     int left_;
     int top_;
-    uint16_t texture_size_;
-    QColor fg_color_;
-    QColor bg_color_;
-    QColor max_color_;
-    QColor med_color_;
+    int line_width_;
     int text_size_;
-    bool show_caption_;
-    bool auto_color_change_;
     int caption_offset_;
-    double fg_alpha_;
-    double fg_alpha2_;
-    double bg_alpha_;
-    double max_value_;
     double min_value_;
-    double max_color_threshold_;
-    double med_color_threshold_;
+    double max_value_;
+    const int width_padding_;
+    const int height_padding_;
+
     float data_;
-    bool update_required_;
     bool first_time_;
-    OverlayObject::Ptr overlay_;
-    bool clockwise_rotate_;
+
     
+    ////////////////////////////////////////////////////////
+    // ROS variables
+    ////////////////////////////////////////////////////////
     boost::mutex mutex_;
-                       
+    ros::Subscriber sub_;
+                        
   protected Q_SLOTS:
     void updateTopic();
-    void updateSize();
-    void updateTop();
-    void updateLeft();
+    void updateShowValue();
+    void updateVerticalGauge();
     void updateBGColor();
-    void updateTextSize();
     void updateFGColor();
     void updateFGAlpha();
-    void updateFGAlpha2();
     void updateBGAlpha();
-    void updateMinValue();
-    void updateMaxValue();
-    void updateShowCaption();
+    void updateWidth();
+    void updateHeight();
+    void updateTop();
+    void updateLeft();
+    void updateLineWidth();
+    void updateShowBorder();
     void updateAutoColorChange();
     void updateMaxColor();
-    void updateMedColor();
-    void updateMaxColorThreshold();
-    void updateMedColorThreshold();
-    void updateClockwiseRotate();
-
+    void updateUpdateInterval();
+    void updateShowCaption();
+    void updateTextSize();
+    void updateMinValue();
+    void updateMaxValue();
   private:
   };
-
 }
 
 #endif
