@@ -7,7 +7,7 @@
 jsk\_visualization
 =================
 
- [![Build Status](https://travis-ci.org/jsk-ros-pkg/jsk_visualization.svg?branch=master)](https://travis-ci.org/jsk-ros-pkg/jsk_visualization)
+ [![Build Status](https://travis-ci.com/jsk-ros-pkg/jsk_visualization.svg?branch=master)](https://travis-ci.com/jsk-ros-pkg/jsk_visualization)
 [![Read the Docs](https://readthedocs.org/projects/pip/badge/?version=latest)](https://jsk-visualization.readthedocs.org)
 
 jsk visualization ros package.
@@ -18,13 +18,13 @@ See [read the docs](http://jsk-visualization.readthedocs.org/en/latest/).
 Gallery
 -------
 
-### [jsk_rviz_plugins](http://jsk-docs.readthedocs.io/en/latest/jsk_visualization/doc/jsk_rviz_plugins)
+### [jsk_rviz_plugins](http://jsk_visualization.readthedocs.io/en/latest/jsk_rviz_plugins)
 
-[![](.readme/gallery_jsk_rviz_plugins.jpg)](http://jsk-docs.readthedocs.io/en/latest/jsk_visualization/doc/jsk_rviz_plugins)
+[![](.readme/gallery_jsk_rviz_plugins.jpg)](http://jsk_visualization.readthedocs.io/en/latest/jsk_rviz_plugins)
 
-### [jsk_rqt_plugins](http://jsk-docs.readthedocs.io/en/latest/jsk_visualization/doc/jsk_rqt_plugins)
+### [jsk_rqt_plugins](http://jsk_visualization.readthedocs.io/en/latest/jsk_rqt_plugins)
 
-[![](.readme/gallery_jsk_rqt_plugins.jpg)](http://jsk-docs.readthedocs.io/en/latest/jsk_visualization/doc/jsk_rqt_plugins)
+[![](.readme/gallery_jsk_rqt_plugins.jpg)](http://jsk_visualization.readthedocs.io/en/latest/jsk_rqt_plugins)
 
 
 
