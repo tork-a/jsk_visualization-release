@@ -1,4 +1,4 @@
-From 341942350a1a0359f98dae2fafc742cb2b8bb348 Mon Sep 17 00:00:00 2001
+From 807ee9ba2c0c08fb1dc2e001e4c3bfd737ede89f Mon Sep 17 00:00:00 2001
 From: Kei Okada <k-okada@jsk.t.u-tokyo.ac.jp>
 Date: Tue, 27 Oct 2020 11:14:34 +0900
 Subject: [PATCH] python-urlgrabber is not released in 20.04
