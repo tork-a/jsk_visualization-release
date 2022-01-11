@@ -20,7 +20,8 @@ find_package(catkin REQUIRED COMPONENTS rviz jsk_hark_msgs jsk_footstep_msgs jsk
   geometry_msgs
   dynamic_reconfigure
   jsk_recognition_msgs
-  jsk_gui_msgs)
+  jsk_gui_msgs
+  message_filters)
 
 # Use ccache if installed to make it fast to generate object files
 if (CMAKE_VERSION VERSION_LESS 3.4)
@@ -90,6 +91,7 @@ set(HEADER_FILES
   src/overlay_camera_display.h
   src/plotter_2d_display.h
   src/pie_chart_display.h
+  src/linear_gauge_display.h
   src/diagnostics_display.h
   src/quiet_interactive_marker_display.h
   src/bounding_box_display.h
@@ -145,6 +147,7 @@ set(SOURCE_FILES
   src/overlay_camera_display.cpp
   src/plotter_2d_display.cpp
   src/pie_chart_display.cpp
+  src/linear_gauge_display.cpp
   src/diagnostics_display.cpp
   src/bounding_box_display.cpp
   src/bounding_box_array_display.cpp
@@ -200,7 +203,8 @@ add_dependencies(jsk_rviz_plugins
   jsk_recognition_msgs_generate_messages_cpp
   people_msgs_generate_messages_cpp
   view_controller_msgs_generate_messages_cpp
-  ${PROJECT_NAME}_generate_messages_cpp)
+  ${PROJECT_NAME}_generate_messages_cpp
+  ${catkin_EXPORTED_TARGETS})
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   set_target_properties(jsk_rviz_plugins PROPERTIES LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -z defs")
@@ -238,3 +242,25 @@ install(DIRECTORY src/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   FILES_MATCHING PATTERN "*.h"
 )
+
+if (CATKIN_ENABLE_TESTING)
+  # download and install sample data
+  add_custom_target(${PROJECT_NAME}_install_sample_data COMMAND python$ENV{ROS_PYTHON_VERSION} ${PROJECT_SOURCE_DIR}/test/install_sample_data.py)
+  add_dependencies(tests ${PROJECT_NAME}_install_sample_data)
+  # run rostest for melodic+
+  find_package(rostest REQUIRED)
+  if("$ENV{ROS_DISTRO}" STRGREATER "indigo") # support from kinetic
+    file(GLOB TEST_FILES test/*.test test/*.xml)
+    foreach(TEST_FILE ${TEST_FILES})
+      # if we failed to install sample data, skip testing face_detect and normal
+      if((NOT EXISTS "${PROJECT_SOURCE_DIR}/test/data/2017-06-20-12-00-00_people_images_in_lab.bag") AND
+	  ((${TEST_FILE} STREQUAL "${PROJECT_SOURCE_DIR}/test/face_detector.xml") OR
+	    (${TEST_FILE} STREQUAL "${PROJECT_SOURCE_DIR}/test/normal.xml")))
+	message(STATUS "Skip test for ${TEST_FILE} due to missing bag file")
+	continue()
+      endif()
+      message(STATUS "Run test for ${TEST_FILE}")
+      add_rostest(${TEST_FILE})
+    endforeach()
+  endif()
+endif()
