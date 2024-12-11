@@ -13,7 +13,7 @@
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/o2r other materials provided
+ *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
  *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
@@ -68,19 +68,27 @@ namespace jsk_rviz_plugins
     // Properties
     rviz::EnumProperty* coloring_property_;
     rviz::ColorProperty* color_property_;
+    rviz::EnumProperty* alpha_method_property_;
     rviz::FloatProperty* alpha_property_;
+    rviz::FloatProperty* alpha_min_property_;
+    rviz::FloatProperty* alpha_max_property_;
     rviz::BoolProperty* only_edge_property_;
     rviz::FloatProperty* line_width_property_;
     rviz::BoolProperty* show_coords_property_;
+    rviz::FloatProperty* value_threshold_property_;
 
     jsk_recognition_msgs::BoundingBoxArray::ConstPtr latest_msg_;
   protected Q_SLOTS:
     void updateColor();
     void updateAlpha();
+    void updateAlphaMin();
+    void updateAlphaMax();
     void updateOnlyEdge();
     void updateColoring();
+    void updateAlphaMethod();
     void updateLineWidth();
     void updateShowCoords();
+    void updateValueThreshold();
   private:
     void processMessage(
       const jsk_recognition_msgs::BoundingBoxArray::ConstPtr& msg);
