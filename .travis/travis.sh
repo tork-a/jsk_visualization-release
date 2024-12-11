@@ -115,6 +115,7 @@ if [ "$USE_DOCKER" = true ]; then
   docker run -v $HOME:$HOME -v $HOME/.ccache:$HOME/.ccache/ -v $HOME/.cache/pip:$HOME/.cache/pip/ \
     $DOCKER_XSERVER_OPTIONS \
     -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
+    -e GITHUB_RUN_ID \
     -e CI_SOURCE_PATH -e HOME -e REPOSITORY_NAME \
     -e BUILD_PKGS -e TARGET_PKGS -e TEST_PKGS \
     -e BEFORE_SCRIPT -e BUILDER -e EXTRA_DEB -e USE_DEB \
@@ -184,6 +185,7 @@ travis_time_start setup_pip
 echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 
 # install add-apt-repository
+sudo apt-get update
 sudo apt-get install -y -q software-properties-common
 if [[ "$ROS_DISTRO" =~ "hydro"|"indigo"|"jade" ]]; then
     sudo apt-get install -y -q python-software-properties
@@ -264,6 +266,7 @@ travis_time_start setup_git
 # check git : old linux needs newer git client ?
 # https://stackoverflow.com/questions/53207973/fatal-unknown-value-for-config-protocol-version-2
 sudo add-apt-repository -y ppa:git-core/ppa
+sudo apt-get update
 sudo apt-get install -y -q git
 git --version
 git config -l
@@ -287,6 +290,16 @@ pip --version
 rosdep --version
 if [ ! -e /etc/ros/rosdep/sources.list.d/20-default.list ]; then
     sudo rosdep init
+fi
+
+# use snapshot of rosdep list
+# https://github.com/ros/rosdistro/pull/31570#issuecomment-1000497517
+if [[ "$ROS_DISTRO" =~ "hydro"|"indigo"|"jade"|"kinetic"|"lunar" ]]; then
+    sudo rm /etc/ros/rosdep/sources.list.d/20-default.list
+    sudo cp $(dirname "${BASH_SOURCE[0]}")/rosdep_snapshots/30-xenial.list /etc/ros/rosdep/sources.list.d
+elif [[ "$ROS_DISTRO" == "melodic" ]]; then
+    sudo rm /etc/ros/rosdep/sources.list.d/20-default.list
+    sudo cp $(dirname "${BASH_SOURCE[0]}")/rosdep_snapshots/30-bionic.list /etc/ros/rosdep/sources.list.d
 fi
 ret=1
 rosdep update --include-eol-distros|| while [ $ret != 0 ]; do sleep 1; rosdep update --include-eol-distros && ret=0 || echo "failed"; done
@@ -336,6 +349,9 @@ if [ "$USE_DEB" == false ]; then
         # install (maybe unreleased version) dependencies from source for specific ros version
         wstool merge --merge-replace -y file://$CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO
     fi
+    # since https://github.blog/2021-09-01-improving-git-protocol-security-github/ we can not use git://
+    # we need to remove git:// from submodules and run wstool update again
+    wstool update || find -iname .gitmodules -exec  cat {} \; -exec sed -i s@git://github@https://github@ {} \; -exec sh -c 'cd $(dirname "$1"); git submodule sync;' sh {} \; -exec cat {} \;
     wstool update
 fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
@@ -414,8 +430,8 @@ if [ "${ROS_PYTHON_VERSION_ORIG}" != "" ]; then export ROS_PYTHON_VERSION=${ROS_
 # for catkin
 if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
-if [ -z $TRAVIS_JOB_ID ]; then
-  # on Jenkins
+if [ -z $TRAVIS_JOB_ID ] || [ ! -z $GITHUB_RUN_ID ] ; then
+  # on Jenkins or GithubAction
   catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
 else
   # on Travis, the command must outputs log within 10 min to avoid failures, so the `travis_wait` is necessary.
@@ -441,20 +457,22 @@ if [[ "$ROS_DISTRO" > "indigo" ]] && [[ "$CMAKE_DEVELOPER_ERROR" == "true" ]]; t
 else
   CMAKE_ARGS_FLAGS=""
 fi
-if [ -z $TRAVIS_JOB_ID ]; then
-  # on Jenkins
+if [ -z $TRAVIS_JOB_ID ] || [ ! -z $GITHUB_RUN_ID ] ; then
+  # on Jenkins or GithubAction
   # suppressing the output
   # - https://github.com/catkin/catkin_tools/issues/405
   # - https://github.com/ros-planning/moveit_ci/pull/18
+  # - https://github.com/catkin/catkin_tools/issues/405#issuecomment-573753780
   #catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
-  catkin build --catkin-make-args run_tests -- -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
+  catkin build --catkin-make-args run_tests -- -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --  | sed '/^[[:space:]]*$/d;/Linked/d;/Scanning/d;/Built target/d;/Symlinking/d;/Removing/d'
 else
   # on Travis
   # suppressing the output
   # - https://github.com/catkin/catkin_tools/issues/405
   # - https://github.com/ros-planning/moveit_ci/pull/18
+  # - https://github.com/catkin/catkin_tools/issues/405#issuecomment-573753780
   #travis_wait 60 catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
-  travis_wait 60 catkin build --catkin-make-args run_tests -- -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
+  travis_wait 60 catkin build --catkin-make-args run_tests -- -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS -- | sed '/^[[:space:]]*$/d;/Linked/d;/Scanning/d;/Built target/d;/Symlinking/d;/Removing/d'
 fi
 
 travis_time_end
@@ -473,8 +491,8 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
 
     catkin clean --yes || catkin clean -a # 0.3.1 uses -a, 0.4.0 uses --yes
     catkin config --install $CATKIN_TOOLS_CONFIG_OPTIONS
-    if [ -z $TRAVIS_JOB_ID ]; then
-      # on Jenkins
+    if [ -z $TRAVIS_JOB_ID ] || [ ! -z $GITHUB_RUN_ID ] ; then
+      # on Jenkins or GithubAction
       catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
     else
       # on Travis
