@@ -212,6 +212,11 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
           <defaultValue></defaultValue>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
+          <name>TIMEOUT_JENKINS</name>
+          <description></description>
+          <defaultValue>120</defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
           <name>ADD_ENV_VALUE_TO_DOCKER</name>
           <description></description>
           <defaultValue></defaultValue>
@@ -325,6 +330,7 @@ echo "REPOSITORY_NAME      : $REPOSITORY_NAME"
 echo "TRAVIS_BUILD_WEB_URL : $TRAVIS_BUILD_WEB_URL"
 echo "TRAVIS_JOB_WEB_URL   : $TRAVIS_JOB_WEB_URL"
 echo "DOCKER_IMAGE_JENKINS : $DOCKER_IMAGE_JENKINS"
+echo "TIMEOUT_JENKINS      : $TIMEOUT_JENKINS"
 echo "ADD_ENV_VALUE_TO_DOCKER     : $ADD_ENV_VALUE_TO_DOCKER"
 
 travis_time_start setup_cache
@@ -408,6 +414,9 @@ sudo chown -R user.jenkins /workspace/.chainer
 sudo chown -R user.jenkins /workspace/.ccache
 sudo chown -R user.jenkins /workspace/.ros
 
+# check if archive.ubuntu.com is available in this distribution
+sudo apt-get -y -qq update || if [ \$? -eq 100 ]; then sudo sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list; fi
+
 # mkdir log dir
 mkdir log
 export ROS_LOG_DIR=\$PWD/log
@@ -455,7 +464,7 @@ rm $DOCKER_ENV_FILE
     </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
     <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@%(TIMEOUT_PLUGIN_VERSION)s">
       <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
-        <timeoutMinutes>120</timeoutMinutes>
+        <timeoutMinutes>%(TIMEOUT_JENKINS)s</timeoutMinutes>
       </strategy>
       <operationList>
         <hudson.plugins.build__timeout.operations.FailOperation/>
@@ -608,6 +617,7 @@ else:
     UBUNTU_DISTRO = 'trusty'
 
 DOCKER_IMAGE_JENKINS = env.get('DOCKER_IMAGE_JENKINS', 'ros-ubuntu:%s-base' % LSB_RELEASE)
+TIMEOUT_JENKINS = env.get('TIMEOUT_JENKINS','120')
 
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
@@ -644,6 +654,7 @@ REPOSITORY_NAME = %(REPOSITORY_NAME)s
 TRAVIS_BUILD_WEB_URL = %(TRAVIS_BUILD_WEB_URL)s
 TRAVIS_JOB_WEB_URL = %(TRAVIS_JOB_WEB_URL)s
 DOCKER_IMAGE_JENKINS = %(DOCKER_IMAGE_JENKINS)s
+TIMEOUT_JENKINS = %(TIMEOUT_JENKINS)s
 ADD_ENV_VALUE_TO_DOCKER = %(ADD_ENV_VALUE_TO_DOCKER)s
 ''' % locals(), file=sys.stderr)
 
@@ -717,6 +728,7 @@ queue_number = j.build_job(job_name, {
     'TRAVIS_BUILD_WEB_URL':TRAVIS_BUILD_WEB_URL,
     'TRAVIS_JOB_WEB_URL':TRAVIS_JOB_WEB_URL,
     'DOCKER_IMAGE_JENKINS':DOCKER_IMAGE_JENKINS,
+    'TIMEOUT_JENKINS':TIMEOUT_JENKINS,
     'ADD_ENV_VALUE_TO_DOCKER':ADD_ENV_VALUE_TO_DOCKER
 })
 
@@ -789,6 +801,7 @@ REPOSITORY_NAME = %(REPOSITORY_NAME)s <br> \
 TRAVIS_BUILD_WEB_URL = %(TRAVIS_BUILD_WEB_URL)s <br> \
 TRAVIS_JOB_WEB_URL = %(TRAVIS_JOB_WEB_URL)s <br> \
 DOCKER_IMAGE_JENKINS = %(DOCKER_IMAGE_JENKINS)s <br> \
+TIMEOUT_JENKINS = %(TIMEOUT_JENKINS)s <br> \
 ADD_ENV_VALUE_TO_DOCKER = %(ADD_ENV_VALUE_TO_DOCKER)s <br> \
 ') % locals())
 

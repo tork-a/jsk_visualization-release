@@ -13,7 +13,7 @@
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/o2r other materials provided
+ *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
  *   * Neither the name of the JSK Lab nor the names of its
  *     contributors may be used to endorse or promote products derived
@@ -206,7 +206,11 @@ void OverlayCameraDisplay::onInitialize()
 
     bg_screen_rect_->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
     bg_screen_rect_->setBoundingBox(aabInf);
+#if ((OGRE_VERSION_MAJOR << 16) | (OGRE_VERSION_MINOR << 8) | OGRE_VERSION_PATCH) < ((1 << 16) | (10 << 8) | 0)
     bg_screen_rect_->setMaterial(bg_material_->getName());
+#else
+    bg_screen_rect_->setMaterial(bg_material_);
+#endif
 
     bg_scene_node_->attachObject(bg_screen_rect_);
     bg_scene_node_->setVisible(false);
@@ -217,7 +221,11 @@ void OverlayCameraDisplay::onInitialize()
 
     fg_material_ = bg_material_->clone( ss.str()+"fg" );
     fg_screen_rect_->setBoundingBox(aabInf);
+#if ((OGRE_VERSION_MAJOR << 16) | (OGRE_VERSION_MINOR << 8) | OGRE_VERSION_PATCH) < ((1 << 16) | (10 << 8) | 0)
     fg_screen_rect_->setMaterial(fg_material_->getName());
+#else
+    fg_screen_rect_->setMaterial(fg_material_);
+#endif
 
     fg_material_->setSceneBlending( Ogre::SBT_TRANSPARENT_ALPHA );
     fg_screen_rect_->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY - 1);
@@ -398,7 +406,7 @@ void OverlayCameraDisplay::update( float wall_dt, float ros_dt )
   if (!overlay_) {
     static int count = 0;
     rviz::UniformStringStream ss;
-    ss << "OverlayImageDisplayObject" << count++;
+    ss << "OverlayCameraImageDisplayObject" << count++;
     overlay_.reset(new OverlayObject(ss.str()));
     overlay_->show();
   }
