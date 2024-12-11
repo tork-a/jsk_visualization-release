@@ -1,3 +1,32 @@
+## jsk_visualization (noetic) - 2.1.10-1
+
+The packages in the `jsk_visualization` repository were released into the `noetic` distro by running `/usr/bin/bloom-release --skip-pip jsk_visualization --track noetic --ros-distro noetic` on `Wed, 11 Dec 2024 06:15:44 -0000`
+
+These packages were released:
+- `jsk_interactive`
+- `jsk_interactive_marker`
+- `jsk_interactive_test`
+- `jsk_rqt_plugins`
+- `jsk_rviz_plugins`
+- `jsk_visualization`
+
+Version of package(s) in repository `jsk_visualization`:
+
+- upstream repository: https://github.com/jsk-ros-pkg/jsk_visualization
+- release repository: https://github.com/tork-a/jsk_visualization-release.git
+- rosdistro version: `2.1.8-1`
+- old version: `2.1.8-1`
+- new version: `2.1.10-1`
+
+Versions of tools used:
+
+- bloom version: `0.11.2`
+- catkin_pkg version: `0.5.2`
+- rosdep version: `0.22.2`
+- rosdistro version: `0.8.3`
+- vcstools version: `0.1.42`
+
+
 ## jsk_visualization (noetic) - 2.1.8-1
 
 The packages in the `jsk_visualization` repository were released into the `noetic` distro by running `/usr/bin/bloom-release -y --skip-pip jsk_visualization --rosdistro noetic --track noetic` on `Tue, 11 Jan 2022 03:19:27 -0000`
