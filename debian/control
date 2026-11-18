@@ -1,0 +1,12 @@
+Source: ros-kilted-jsk-rqt-plugins
+Section: misc
+Priority: optional
+Maintainer: "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), python3-pytest <!nocheck>, ros-kilted-ament-cmake, ros-kilted-ament-cmake-pytest <!nocheck>, ros-kilted-ament-cmake-python, ros-kilted-diagnostic-msgs <!nocheck>, ros-kilted-jsk-recognition-msgs, ros-kilted-jsk-ros1-ros2-compat, ros-kilted-launch-ros <!nocheck>, ros-kilted-launch-testing <!nocheck>, ros-kilted-launch-testing-ament-cmake <!nocheck>, ros-kilted-ros-environment, ros-kilted-rosidl-runtime-py <!nocheck>, ros-kilted-visualization-msgs <!nocheck>, xvfb <!nocheck>, ros-kilted-ros-workspace
+Homepage: https://jsk-visualization.readthedocs.io/en/latest/jsk_rqt_plugins/index.html
+Standards-Version: 3.9.2
+
+Package: ros-kilted-jsk-rqt-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-matplotlib, python3-numpy, python3-opencv, python3-sklearn, python3-yaml, ros-kilted-ament-index-python, ros-kilted-builtin-interfaces, ros-kilted-cv-bridge, ros-kilted-image-view2, ros-kilted-jsk-gui-msgs (>= 4.3.0), ros-kilted-jsk-recognition-msgs, ros-kilted-jsk-ros1-ros2-compat, ros-kilted-launch, ros-kilted-launch-ros, ros-kilted-python-qt-binding, ros-kilted-qt-gui-py-common, ros-kilted-resource-retriever, ros-kilted-rosidl-runtime-py, ros-kilted-rqt-gui, ros-kilted-rqt-gui-py, ros-kilted-rqt-plot, ros-kilted-rqt-py-common, ros-kilted-std-msgs, ros-kilted-std-srvs, ros-kilted-ros-workspace
+Description: The jsk_rqt_plugins package
