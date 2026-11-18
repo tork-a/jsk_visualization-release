@@ -1,0 +1,12 @@
+Source: ros-jazzy-jsk-visualization
+Section: misc
+Priority: optional
+Maintainer: "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), ros-jazzy-ament-cmake, ros-jazzy-ros-environment, ros-jazzy-ros-workspace
+Homepage: http://ros.org/wiki/jsk_visualization
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-jsk-visualization
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jazzy-jsk-interactive-marker, ros-jazzy-jsk-rqt-plugins, ros-jazzy-jsk-rviz-plugins, ros-jazzy-ros-workspace
+Description: Metapackage that contains visualization package for jsk-ros-pkg
