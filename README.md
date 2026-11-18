@@ -1,3 +1,30 @@
+## jsk_visualization (lyrical) - 3.0.1-1
+
+The packages in the `jsk_visualization` repository were released into the `lyrical` distro by running `/usr/bin/bloom-release --rosdistro lyrical --track lyrical --new-track --override-release-repository-url https://github.com/tork-a/jsk_visualization-release.git jsk_visualization` on `Wed, 18 Nov 2026 23:49:04 -0000`
+
+These packages were released:
+- `jsk_interactive_marker`
+- `jsk_rqt_plugins`
+- `jsk_rviz_plugins`
+- `jsk_visualization`
+
+Version of package(s) in repository `jsk_visualization`:
+
+- upstream repository: https://github.com/jsk-ros-pkg/jsk_visualization
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `3.0.1-1`
+
+Versions of tools used:
+
+- bloom version: `0.14.4`
+- catkin_pkg version: `1.1.1`
+- rosdep version: `0.27.0`
+- rosdistro version: `1.1.0`
+- vcstools version: `0.1.42`
+
+
 ## jsk_visualization (kilted) - 3.0.1-1
 
 The packages in the `jsk_visualization` repository were released into the `kilted` distro by running `/usr/bin/bloom-release --rosdistro kilted --track kilted --new-track --override-release-repository-url https://github.com/tork-a/jsk_visualization-release.git jsk_visualization` on `Wed, 18 Nov 2026 23:46:34 -0000`
