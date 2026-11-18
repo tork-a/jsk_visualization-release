@@ -1,0 +1,12 @@
+Source: ros-lyrical-jsk-rqt-plugins
+Section: misc
+Priority: optional
+Maintainer: "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), python3-pytest <!nocheck>, ros-lyrical-ament-cmake, ros-lyrical-ament-cmake-pytest <!nocheck>, ros-lyrical-ament-cmake-python, ros-lyrical-diagnostic-msgs <!nocheck>, ros-lyrical-jsk-recognition-msgs, ros-lyrical-jsk-ros1-ros2-compat, ros-lyrical-launch-ros <!nocheck>, ros-lyrical-launch-testing <!nocheck>, ros-lyrical-launch-testing-ament-cmake <!nocheck>, ros-lyrical-ros-environment, ros-lyrical-rosidl-runtime-py <!nocheck>, ros-lyrical-visualization-msgs <!nocheck>, xvfb <!nocheck>, ros-lyrical-ros-workspace
+Homepage: https://jsk-visualization.readthedocs.io/en/latest/jsk_rqt_plugins/index.html
+Standards-Version: 3.9.2
+
+Package: ros-lyrical-jsk-rqt-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-matplotlib, python3-numpy, python3-opencv, python3-sklearn, python3-yaml, ros-lyrical-ament-index-python, ros-lyrical-builtin-interfaces, ros-lyrical-cv-bridge, ros-lyrical-image-view2, ros-lyrical-jsk-gui-msgs (>= 4.3.0), ros-lyrical-jsk-recognition-msgs, ros-lyrical-jsk-ros1-ros2-compat, ros-lyrical-launch, ros-lyrical-launch-ros, ros-lyrical-python-qt-binding, ros-lyrical-qt-gui-py-common, ros-lyrical-resource-retriever, ros-lyrical-rosidl-runtime-py, ros-lyrical-rqt-gui, ros-lyrical-rqt-gui-py, ros-lyrical-rqt-plot, ros-lyrical-rqt-py-common, ros-lyrical-std-msgs, ros-lyrical-std-srvs, ros-lyrical-ros-workspace
+Description: The jsk_rqt_plugins package
