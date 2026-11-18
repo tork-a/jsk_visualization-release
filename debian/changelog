@@ -1,0 +1,339 @@
+ros-jazzy-jsk-visualization (3.0.1-1noble) noble; urgency=high
+
+  * [jsk_visualization] a package which depends on the others, not a metapackage
+    bloom refuses to release the metapackage on ROS 2 because its
+    CMakeLists.txt is not the one of REP 127 (it branches on $ROS_VERSION),
+    so, as jsk_common does, export no <metapackage/> and call catkin_package()
+    on ROS 1.
+    Co-Authored-By: Claude Opus 5.5 <mailto:noreply@anthropic.com>
+  * Contributors: Kei Okada
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 18 Nov 2026 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (3.0.0-1noble) noble; urgency=high
+
+  * Merge pull request #905 <https://github.com/jsk-ros-pkg/jsk_visualization/issues/905> from k-okada/rqt-plugins-ros1-ros2
+    ROS 1 / ROS 2 for the whole repository from one source tree (jsk_ros1_ros2_compat)
+  * [jsk_visualization] build the metapackage on ROS 1 (catkin) and ROS 2 (ament)
+    As on the ros2 branch (#903 <https://github.com/jsk-ros-pkg/jsk_visualization/issues/903>, "add jsk_visualization meta package"):
+    package.xml format 3, ament_cmake on ROS 2 and the author line; here
+    from one package.xml/CMakeLists.txt for both, as jsk_common does:
+    - package.xml: catkin on ROS 1, ament_cmake (and ros_environment) on
+    ROS 2; jsk_rqt_plugins, jsk_rviz_plugins and jsk_interactive_marker
+    build on both, so they are exec_depends of both; jsk_interactive and
+    jsk_interactive_test are not ported to ROS 2 (euslisp), so they are
+    ROS 1 only. build_type follows ROS_VERSION.
+    - CMakeLists.txt: the ROS 1 lines (catkin_metapackage()) are unchanged,
+    the ament build is prepended in if("$ENV{ROS_VERSION}" EQUAL 2) ...
+    else() and the file ends with endif(). catkin keeps building it as a
+    metapackage; catkin_pkg only warns that a metapackage should have no
+    buildtool_depend but catkin, since it does not evaluate the conditions
+    of the ROS 2 ones there.
+    Co-authored-by: Yoshiki Obinata <mailto:mqcmd196@hotmail.co.jp>
+    Co-Authored-By: Claude Opus 5.5 <mailto:noreply@anthropic.com>
+  * Contributors: Kei Okada
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 18 Nov 2026 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.1.10-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 10 Dec 2024 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.1.9-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 10 Dec 2024 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.1.8-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 10 Jan 2022 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.1.7-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 16 Oct 2020 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.1.6-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 12 Apr 2020 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.1.5-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 17 Feb 2019 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.1.4-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 31 Oct 2018 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.1.3-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 25 Oct 2017 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.1.2-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 06 Jul 2017 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.1.1-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 14 Feb 2017 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.1.0-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 12 Feb 2017 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.0.1-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 14 Dec 2016 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (2.0.0-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 13 Dec 2016 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.34-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 28 Sep 2016 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.33-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 12 Sep 2016 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.32-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 19 Jul 2016 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.31-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 18 May 2016 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.30-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 24 Mar 2016 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.29-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 19 Mar 2016 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.28-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 02 Feb 2016 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.27-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 07 Dec 2015 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.26-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 02 Dec 2015 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.25-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 09 Oct 2015 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.24-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 07 Sep 2015 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.23-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 14 Jul 2015 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.22-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 23 Jun 2015 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.21-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 10 Jun 2015 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.20-1noble) noble; urgency=high
+
+  * [jsk_visualization] Add jsk_visualization meta package
+  * Contributors: Ryohei Ueda
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 03 May 2015 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.19-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 08 Apr 2015 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.18-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 29 Jan 2015 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.17-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 28 Jan 2015 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.16-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 03 Jan 2015 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.15-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 12 Dec 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.14-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 08 Dec 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.13-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 09 Oct 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.12-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 22 Sep 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.11-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 21 Sep 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.10-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 12 Sep 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.9-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 06 Sep 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.8-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 03 Sep 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.7-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 05 Aug 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.6-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Sun, 13 Jul 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.5-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Sat, 28 Jun 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.4-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 30 May 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.3-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Wed, 21 May 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.2-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Tue, 20 May 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.1-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Mon, 19 May 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (1.0.0-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Fri, 16 May 2014 15:00:00 -0000
+
+ros-jazzy-jsk-visualization (0.0.3-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 15 May 2014 05:00:00 -0000
+
+ros-jazzy-jsk-visualization (0.0.2-1noble) noble; urgency=high
+
+
+
+ -- "Ryohei Ueda" <ueda@jsk.t.u-tokyo.ac.jp>  Thu, 15 May 2014 02:06:00 -0000
+
+
