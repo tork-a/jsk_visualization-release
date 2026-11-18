@@ -1,3 +1,30 @@
+## jsk_visualization (jazzy) - 3.0.1-1
+
+The packages in the `jsk_visualization` repository were released into the `jazzy` distro by running `/usr/bin/bloom-release --rosdistro jazzy --track jazzy --new-track --override-release-repository-url https://github.com/tork-a/jsk_visualization-release.git jsk_visualization` on `Wed, 18 Nov 2026 23:43:26 -0000`
+
+These packages were released:
+- `jsk_interactive_marker`
+- `jsk_rqt_plugins`
+- `jsk_rviz_plugins`
+- `jsk_visualization`
+
+Version of package(s) in repository `jsk_visualization`:
+
+- upstream repository: https://github.com/jsk-ros-pkg/jsk_visualization
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `3.0.1-1`
+
+Versions of tools used:
+
+- bloom version: `0.14.4`
+- catkin_pkg version: `1.1.1`
+- rosdep version: `0.27.0`
+- rosdistro version: `1.1.0`
+- vcstools version: `0.1.42`
+
+
 ## jsk_visualization (noetic) - 2.1.10-1
 
 The packages in the `jsk_visualization` repository were released into the `noetic` distro by running `/usr/bin/bloom-release --skip-pip jsk_visualization --track noetic --ros-distro noetic` on `Wed, 11 Dec 2024 06:15:44 -0000`
