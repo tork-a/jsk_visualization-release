@@ -1,0 +1,12 @@
+Source: ros-kilted-jsk-interactive-marker
+Section: misc
+Priority: optional
+Maintainer: "furuta" <furuta@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), libboost-all-dev, libtinyxml-dev, libyaml-cpp-dev, ros-kilted-ament-cmake, ros-kilted-builtin-interfaces, ros-kilted-geometry-msgs, ros-kilted-interactive-markers, ros-kilted-jsk-recognition-msgs (>= 1.2.0), ros-kilted-jsk-recognition-utils, ros-kilted-jsk-ros1-ros2-compat, ros-kilted-jsk-rviz-plugins, ros-kilted-launch-testing <!nocheck>, ros-kilted-launch-testing-ament-cmake <!nocheck>, ros-kilted-rclcpp, ros-kilted-rclpy <!nocheck>, ros-kilted-ros-environment, ros-kilted-rosidl-default-generators, ros-kilted-sensor-msgs, ros-kilted-std-msgs, ros-kilted-std-srvs, ros-kilted-tf2, ros-kilted-tf2-eigen, ros-kilted-tf2-geometry-msgs, ros-kilted-tf2-ros, ros-kilted-visualization-msgs, ros-kilted-ros-workspace, ros-kilted-rosidl-typesupport-fastrtps-c, ros-kilted-rosidl-typesupport-fastrtps-cpp
+Homepage: http://ros.org/wiki/interactive_marker
+Standards-Version: 3.9.2
+
+Package: ros-kilted-jsk-interactive-marker
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libboost-all-dev, libtinyxml-dev, libyaml-cpp-dev, ros-kilted-builtin-interfaces, ros-kilted-geometry-msgs, ros-kilted-interactive-markers, ros-kilted-jsk-recognition-msgs (>= 1.0.0), ros-kilted-jsk-recognition-utils, ros-kilted-jsk-ros1-ros2-compat, ros-kilted-jsk-rviz-plugins, ros-kilted-launch, ros-kilted-launch-ros, ros-kilted-rclcpp, ros-kilted-rosidl-default-runtime, ros-kilted-rviz2, ros-kilted-sensor-msgs, ros-kilted-std-msgs, ros-kilted-std-srvs, ros-kilted-tf2, ros-kilted-tf2-eigen, ros-kilted-tf2-geometry-msgs, ros-kilted-tf2-ros, ros-kilted-visualization-msgs, ros-kilted-ros-workspace
+Description: jsk interactive markers
