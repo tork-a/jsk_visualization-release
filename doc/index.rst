@@ -1,36 +1,21 @@
-================
-jsk_rviz_plugins
-================
+=================
+jsk_visualization
+=================
 
-jsk\_rviz\_plugins is a package to provide original rviz plugins.
+jsk_visualization is a stack for the visualization packages which are used in JSK lab.
 
-You can use these rviz plugins, panels and tools just by launching rviz.
+The code is open source, and `available on github`_.
+
+.. _available on github: http://github.com/jsk-ros-pkg/jsk_visualization
 
 
-.. toctree::
-   :glob:
-   :maxdepth: 1
-   :caption: plugins
+This repository contains following ros packages:
 
-   ./plugins/*
 
 .. toctree::
-   :glob:
    :maxdepth: 1
-   :caption: panels
 
-   ./panels/*
-
-.. toctree::
-   :glob:
-   :maxdepth: 1
-   :caption: tools
-
-   ./tools/*
-
-.. toctree::
-   :glob:
-   :maxdepth: 1
-   :caption: nodes
-
-   ./nodes/*
+   jsk_rviz_plugins/index
+   jsk_rqt_plugins/index
+   jsk_interactive_marker/index
+   tips/index
