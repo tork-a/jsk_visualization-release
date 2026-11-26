@@ -1,0 +1,12 @@
+Source: ros-lyrical-jsk-rviz-plugins
+Section: misc
+Priority: optional
+Maintainer: "Kei Okada" <k-okada@jsk.t.u-tokyo.ac.jp>
+Build-Depends: debhelper (>= 9.0.0), libboost-all-dev, libeigen3-dev, libgl1-mesa-dev <!nocheck>, libglu1-mesa-dev <!nocheck>, libopencv-dev, python3-pytest <!nocheck>, qtbase5-dev, ros-lyrical-action-msgs, ros-lyrical-ament-cmake, ros-lyrical-ament-index-cpp, ros-lyrical-cv-bridge, ros-lyrical-diagnostic-msgs, ros-lyrical-geometry-msgs, ros-lyrical-image-transport, ros-lyrical-jsk-footstep-msgs, ros-lyrical-jsk-gui-msgs, ros-lyrical-jsk-hark-msgs, ros-lyrical-jsk-recognition-msgs, ros-lyrical-jsk-recognition-utils, ros-lyrical-jsk-ros1-ros2-compat, ros-lyrical-launch-testing <!nocheck>, ros-lyrical-launch-testing-ament-cmake <!nocheck>, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-resource-retriever, ros-lyrical-ros-environment, ros-lyrical-rosidl-default-generators, ros-lyrical-rviz-common, ros-lyrical-rviz-default-plugins, ros-lyrical-rviz-ogre-vendor, ros-lyrical-rviz-rendering, ros-lyrical-sensor-msgs, ros-lyrical-std-msgs, ros-lyrical-std-srvs, ros-lyrical-visualization-msgs, xvfb <!nocheck>, ros-lyrical-ros-workspace, ros-lyrical-rosidl-typesupport-fastrtps-c, ros-lyrical-rosidl-typesupport-fastrtps-cpp
+Homepage: https://jsk-visualization.readthedocs.io/en/latest/jsk_rviz_plugins/index.html
+Standards-Version: 3.9.2
+
+Package: ros-lyrical-jsk-rviz-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libopencv-dev, python3-numpy, python3-scipy, qtbase5-dev, ros-lyrical-action-msgs, ros-lyrical-ament-index-cpp, ros-lyrical-ament-index-python, ros-lyrical-cv-bridge, ros-lyrical-diagnostic-msgs, ros-lyrical-geometry-msgs, ros-lyrical-image-publisher, ros-lyrical-image-transport, ros-lyrical-jsk-footstep-msgs, ros-lyrical-jsk-gui-msgs, ros-lyrical-jsk-hark-msgs, ros-lyrical-jsk-recognition-msgs, ros-lyrical-jsk-recognition-utils, ros-lyrical-jsk-ros1-ros2-compat, ros-lyrical-launch, ros-lyrical-launch-ros, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-resource-retriever, ros-lyrical-rosidl-default-runtime, ros-lyrical-rviz-common, ros-lyrical-rviz-default-plugins, ros-lyrical-rviz-ogre-vendor, ros-lyrical-rviz-rendering, ros-lyrical-rviz2, ros-lyrical-sensor-msgs, ros-lyrical-std-msgs, ros-lyrical-std-srvs, ros-lyrical-visualization-msgs, ros-lyrical-ros-workspace
+Description: The jsk_rviz_plugins package
